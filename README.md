@@ -1,36 +1,230 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Bayse Portfolio Tracker + AI Analyst
 
-## Getting Started
+A full-stack prediction market intelligence platform that tracks portfolio performance and generates AI-powered insights using Google Gemini.
 
-First, run the development server:
+---
+
+## ✨ What This Project Does
+
+* 📊 Track your Bayse portfolio in real time
+* 📈 Analyze profit & loss (PnL) and performance
+* 🤖 Get AI-generated insights on your trades
+* 🔐 Secure authentication with Firebase
+
+---
+
+## 🧱 Tech Stack
+
+* Next.js (App Router)
+* TypeScript
+* Tailwind CSS
+* Firebase (Auth + Firestore)
+* Google Gemini API
+* Bayse Markets API
+
+---
+
+## ⚡ Quick Start (5 Minutes)
+
+### 1. Clone the repo
+
+```bash
+git clone <repo-url>
+cd <project-name>
+```
+
+---
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+---
+
+### 3. Setup environment variables
+
+Create:
+
+```bash
+.env.local
+```
+
+Add:
+
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+
+FIREBASE_ADMIN_PRIVATE_KEY=
+FIREBASE_ADMIN_CLIENT_EMAIL=
+
+BAYSE_PUBLIC_KEY=
+BAYSE_SECRET_KEY=
+
+GEMINI_API_KEY=
+```
+
+---
+
+### 4. Run the app
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📁 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+/app            → Pages + API routes
+/components     → UI components
+/hooks          → Client logic
+/services       → Business logic
+/lib            → External integrations
+/types          → Type definitions
+/constants      → Config values
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧠 Architecture Overview
 
-## Deploy on Vercel
+```
+Frontend (React)
+      ↓
+API Routes (/api/*)
+      ↓
+Services (business logic)
+      ↓
+External Clients (Bayse, Gemini, Firebase)
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚫 Rules (Do Not Break These)
+
+* ❌ No API calls inside components
+
+* ❌ No business logic inside API routes
+
+* ❌ No direct external API calls from frontend
+
+* ✅ Always use API routes
+
+* ✅ Always use service layer
+
+* ✅ Keep files small and focused
+
+---
+
+## 🛠 How to Work on This Project
+
+### Example: Portfolio Feature
+
+```
+/hooks/usePortfolio.ts
+        ↓
+/api/portfolio
+        ↓
+/services/portfolio.service.ts
+        ↓
+/lib/bayse/client.ts
+```
+
+---
+
+## 👥 Team Roles
+
+| Role        | Owns                        |
+| ----------- | --------------------------- |
+| Frontend    | UI, components, pages       |
+| Backend     | API routes, services        |
+| AI          | Gemini integration, prompts |
+| Integration | Connect everything          |
+
+---
+
+## 🌿 Git Workflow
+
+### Branch naming
+
+```
+feat/portfolio-api
+feat/pnl-ui
+feat/ai-analysis
+```
+
+---
+
+### Commit format
+
+```
+feat: add portfolio service
+fix: handle API error
+```
+
+---
+
+### Rule
+
+👉 No direct commits to main
+
+---
+
+## 🧪 API Endpoints
+
+| Endpoint         | Description          |
+| ---------------- | -------------------- |
+| `/api/portfolio` | Fetch portfolio data |
+| `/api/pnl`       | Fetch PnL data       |
+| `/api/analyze`   | Generate AI insights |
+
+---
+
+## ⚠️ Common Mistakes
+
+* Fetching directly in components
+* Mixing UI and logic
+* Hardcoding API responses
+* Ignoring types
+
+---
+
+## 🚀 Deployment
+
+Using Vercel:
+
+```bash
+npm install -g vercel
+vercel
+```
+
+---
+
+## 🏁 Demo Checklist
+
+* [ ] Login works
+* [ ] Portfolio loads
+* [ ] PnL loads
+* [ ] AI generates insight
+* [ ] No console errors
+
+---
+
+## 📌 Final Note
+
+This project is optimized for **speed, clarity, and teamwork**.
+
+Follow the structure — don’t improvise it.
+
+---
