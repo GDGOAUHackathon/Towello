@@ -158,11 +158,17 @@ External Clients (Bayse, Gemini, Firebase)
 
 ### Branch naming
 
+Branch naming should be based on the developer's name: `dev-name/feature-name`
+
+Examples:
 ```
-feat/portfolio-api
-feat/pnl-ui
-feat/ai-analysis
+guardianprime/feature-name
+philip/feature-name
+vickyjay/feature-name
+samkiel/feature-name
+olamilekan/feature-name
 ```
+
 
 ---
 
@@ -202,12 +208,13 @@ fix: handle API error
 
 ## 🚀 Deployment
 
-Using Vercel:
+Using Google Cloud (Cloud Run / App Engine):
 
 ```bash
-npm install -g vercel
-vercel
+# NOT BUILT YET — Awaiting deployment configuration by the developer
+# Example: gcloud run deploy
 ```
+
 
 ---
 
