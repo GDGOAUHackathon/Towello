@@ -209,11 +209,15 @@ fix: handle API error
 ## 🚀 Deployment
 
 Using Google Cloud (Cloud Run / App Engine):
+Using Google Cloud (Cloud Run / App Engine):
 
 ```bash
 # NOT BUILT YET — Awaiting deployment configuration by the developer
 # Example: gcloud run deploy
+# NOT BUILT YET — Awaiting deployment configuration by the developer
+# Example: gcloud run deploy
 ```
+
 
 
 ---
