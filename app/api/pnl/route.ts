@@ -1,36 +1,33 @@
-/**
- * PnL API Route
- * 
- * Responsibility: Fetch historical and current Profit and Loss data.
- * Owner: Backend Engineer
- * Flow: Request → auth check → PnL Service → Response
- * Implementation: Fetch and aggregate snapshots for the requested timeframe.
- */
-
 import { NextRequest, NextResponse } from 'next/server';
-// import { pnlService } from '@/services/pnl.service';
+import { pnlService } from '@/services/pnl.service';
+import { BayseApiError } from '@/lib/bayse/errors';
+import type { ApiResponse } from '@/types/api';
+import type { PnLHistory } from '@/types/pnl';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const timeframe = searchParams.get('timeframe') || '1M';
+  const timeframe = searchParams.get('timeframe') ?? '1M';
 
   try {
-    // 1. Authenticate user
-    const userId = 'placeholder-user-id';
+    const userId = 'mvp-user';
+    const data = await pnlService.getPnLHistory(userId, timeframe);
 
-    return NextResponse.json(
-      { data: null, error: 'GET /api/pnl not implemented yet — awaiting developer.' },
-      { status: 501 }
-    );
-  } catch (error: any) {
-    return NextResponse.json(
-      { data: null, error: error.message || 'Failed to fetch PnL data' },
-      { status: 500 }
-    );
+    const body: ApiResponse<PnLHistory> = {
+      data,
+      error: null,
+    };
+
+    return NextResponse.json(body);
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : 'Failed to fetch PnL data';
+    const status = error instanceof BayseApiError ? error.status : 500;
+
+    const body: ApiResponse<null> = {
+      data: null,
+      error: message,
+    };
+
+    return NextResponse.json(body, { status: status >= 400 && status < 600 ? status : 500 });
   }
 }
-
-/**
- * Request: GET /api/pnl?timeframe=1M
- * Response: { data: { snapshots: [], timeframe: '1M' }, error: null }
- */

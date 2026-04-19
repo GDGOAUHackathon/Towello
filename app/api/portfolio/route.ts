@@ -1,36 +1,34 @@
-/**
- * Portfolio API Route
- * 
- * Responsibility: Entry point for portfolio data fetching.
- * Owner: Backend Engineer
- * Flow: Request → auth check → Portfolio Service → Response
- * Implementation: Verify session/token, call portfolioService.getUserPortfolio, and return JSON.
- */
+import { NextResponse } from 'next/server';
+import { portfolioService } from '@/services/portfolio.service';
+import { BayseApiError } from '@/lib/bayse/errors';
+import type { ApiResponse } from '@/types/api';
+import type { PortfolioPosition, PortfolioSummary } from '@/types/portfolio';
 
-import { NextRequest, NextResponse } from 'next/server';
-// import { portfolioService } from '@/services/portfolio.service';
-
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    // 1. Authenticate user
-    const userId = 'placeholder-user-id';
+    const userId = 'mvp-user';
+    const { positions, summary } =
+      await portfolioService.getUserPortfolio(userId);
 
-    // 2. Fetch data via service
-    // const data = await portfolioService.getUserPortfolio(userId);
+    const body: ApiResponse<{
+      positions: PortfolioPosition[];
+      summary: PortfolioSummary;
+    }> = {
+      data: { positions, summary },
+      error: null,
+    };
 
-    return NextResponse.json(
-      { data: null, error: 'GET /api/portfolio not implemented yet — awaiting developer.' },
-      { status: 501 }
-    );
-  } catch (error: any) {
-    return NextResponse.json(
-      { data: null, error: error.message || 'Failed to fetch portfolio' },
-      { status: 500 }
-    );
+    return NextResponse.json(body);
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : 'Failed to fetch portfolio';
+    const status = error instanceof BayseApiError ? error.status : 500;
+
+    const body: ApiResponse<null> = {
+      data: null,
+      error: message,
+    };
+
+    return NextResponse.json(body, { status: status >= 400 && status < 600 ? status : 500 });
   }
 }
-
-/**
- * Request: GET /api/portfolio
- * Response: { data: { positions: [], summary: {} }, error: null }
- */

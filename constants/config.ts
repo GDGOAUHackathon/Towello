@@ -19,10 +19,10 @@ export const CONFIG = {
   },
   GEMINI: {
     API_KEY: process.env.GEMINI_API_KEY,
-    MODEL: 'gemini-1.5-pro',
+    MODEL: process.env.GEMINI_MODEL ?? 'gemini-2.0-flash',
   },
   APP: {
-    NAME: 'Bayse Portfolio Tracker',
+    NAME: 'Towello',
     VERSION: '1.0.0',
   },
 } as const;
