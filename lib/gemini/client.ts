@@ -1,6 +1,6 @@
 /**
  * Google Gemini API Client
- * 
+ *
  * Responsibility: Handle all communication with the Google Gemini AI API.
  * Owner: AI Engineer
  * Implementation: Setup the GenerativeModel instance and methods for sending prompts.

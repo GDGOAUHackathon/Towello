@@ -1,6 +1,6 @@
 /**
  * API Types
- * 
+ *
  * Responsibility: Standardize API request/response wrappers.
  * Owner: Backend Engineer
  * Implementation: Add pagination, filtering, and error handling structures.
