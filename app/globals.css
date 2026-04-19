@@ -3,6 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --landing-glow: rgba(16, 185, 129, 0.35);
+  --landing-violet: rgba(139, 92, 246, 0.25);
 }
 
 @theme inline {
@@ -22,5 +24,57 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Landing: subtle grid + gradient drift */
+@keyframes landing-gradient-shift {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translate(2%, -2%) scale(1.03);
+  }
+}
+
+@keyframes landing-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes landing-shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.landing-hero-glow {
+  animation: landing-gradient-shift 14s ease-in-out infinite;
+}
+
+.landing-card-float {
+  animation: landing-float 6s ease-in-out infinite;
+}
+
+.landing-shimmer-border {
+  background: linear-gradient(
+    90deg,
+    rgba(16, 185, 129, 0.15),
+    rgba(139, 92, 246, 0.25),
+    rgba(245, 158, 11, 0.15),
+    rgba(16, 185, 129, 0.15)
+  );
+  background-size: 200% auto;
+  animation: landing-shimmer 8s linear infinite;
 }
