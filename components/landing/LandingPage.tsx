@@ -202,7 +202,7 @@ export function LandingPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-40" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                 </span>
-                Hackathon build · Bayse × Gemini
+                Hackathon build · Firebase · Bayse · Gemini
               </div>
               <h1 className="mt-6 text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-[3.25rem]">
                 Your prediction-market{' '}
@@ -261,6 +261,9 @@ export function LandingPage() {
             <div className="flex flex-wrap items-center justify-center gap-8 text-sm font-medium text-zinc-300">
               <span className="rounded-lg border border-white/10 bg-zinc-900/50 px-4 py-2">
                 Bayse Markets API
+              </span>
+              <span className="rounded-lg border border-white/10 bg-zinc-900/50 px-4 py-2">
+                Firebase Auth · Firestore
               </span>
               <span className="rounded-lg border border-white/10 bg-zinc-900/50 px-4 py-2">
                 Google Gemini
