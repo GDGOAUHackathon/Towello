@@ -17,7 +17,7 @@ function buttonClass(variant: "ghost" | "gold") {
     return "inline-flex items-center justify-center rounded-xl border border-[#F0C040]/80 bg-[#F0C040] px-4 py-2 text-sm font-semibold text-zinc-950 shadow-[0_16px_36px_-22px_rgba(240,192,64,0.95)] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110";
   }
 
-  return "inline-flex items-center justify-center rounded-xl border border-zinc-700/70 bg-zinc-900/40 px-4 py-2 text-sm font-medium text-zinc-200 transition-all duration-300 hover:border-[#F0C040]/65 hover:text-[#F0C040]";
+  return "inline-flex items-center justify-center rounded-xl border border-zinc-300 bg-white/70 px-4 py-2 text-sm font-medium text-zinc-700 transition-all duration-300 hover:border-[#F0C040]/65 hover:text-[#B38914] dark:border-zinc-700/70 dark:bg-zinc-900/40 dark:text-zinc-200 dark:hover:text-[#F0C040]";
 }
 
 export default function Navbar() {
@@ -26,11 +26,11 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <div className="mx-auto max-w-7xl px-4 pt-4 md:px-8">
-        <nav className="rounded-2xl border border-zinc-800/80 bg-zinc-950/70 px-4 py-3 backdrop-blur-xl shadow-[0_18px_38px_-28px_rgba(0,0,0,0.9)]">
+        <nav className="rounded-2xl border border-zinc-200/80 bg-white/70 px-4 py-3 backdrop-blur-xl shadow-[0_18px_38px_-28px_rgba(0,0,0,0.25)] dark:border-zinc-800/80 dark:bg-zinc-950/70 dark:shadow-[0_18px_38px_-28px_rgba(0,0,0,0.9)]">
           <div className="flex items-center justify-between gap-4">
             <Link
               href="#home"
-              className="text-sm font-semibold tracking-[0.16em] text-zinc-100 transition-colors duration-300 hover:text-[#F0C040]"
+              className="text-sm font-semibold tracking-[0.16em] text-zinc-900 transition-colors duration-300 hover:text-[#B38914] dark:text-zinc-100 dark:hover:text-[#F0C040]"
             >
               Bayse AI
             </Link>
@@ -40,7 +40,7 @@ export default function Navbar() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-zinc-300 transition-colors duration-300 hover:text-[#F0C040]"
+                    className="text-sm text-zinc-600 transition-colors duration-300 hover:text-[#B38914] dark:text-zinc-300 dark:hover:text-[#F0C040]"
                   >
                     {link.label}
                   </Link>
@@ -63,7 +63,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setIsOpen((prev) => !prev)}
-                className="inline-flex size-10 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900/50 text-zinc-200 transition-all duration-300 hover:border-[#F0C040]/70 hover:text-[#F0C040]"
+                className="inline-flex size-10 items-center justify-center rounded-xl border border-zinc-300 bg-white/70 text-zinc-700 transition-all duration-300 hover:border-[#F0C040]/70 hover:text-[#B38914] dark:border-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-200 dark:hover:text-[#F0C040]"
                 aria-label="Toggle menu"
                 aria-expanded={isOpen}
               >
@@ -77,14 +77,14 @@ export default function Navbar() {
           </div>
 
           {isOpen ? (
-            <div className="mt-4 space-y-4 rounded-xl border border-zinc-800 bg-zinc-900/80 p-4 lg:hidden">
+            <div className="mt-4 space-y-4 rounded-xl border border-zinc-200 bg-white/80 p-4 lg:hidden dark:border-zinc-800 dark:bg-zinc-900/80">
               <ul className="space-y-2">
                 {navLinks.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
                       onClick={() => setIsOpen(false)}
-                      className="block rounded-lg px-3 py-2 text-sm text-zinc-300 transition-colors duration-300 hover:bg-zinc-800 hover:text-[#F0C040]"
+                      className="block rounded-lg px-3 py-2 text-sm text-zinc-600 transition-colors duration-300 hover:bg-zinc-100 hover:text-[#B38914] dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-[#F0C040]"
                     >
                       {link.label}
                     </Link>
