@@ -1,22 +1,47 @@
-/**
- * Firebase Client SDK
- * 
- * Responsibility: Initialize and export Firebase client-side services (Auth, Firestore).
- * Owner: Backend Engineer
- * Implementation: Initialize with configuration from constants and export auth/db instances.
- */
+'use client';
 
-// import { initializeApp, getApps } from 'firebase/app';
-// import { getAuth } from 'firebase/auth';
-// import { getFirestore } from 'firebase/firestore';
-// import { CONFIG } from '@/constants/config';
+import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
+import { getAuth, type Auth } from 'firebase/auth';
+import { getFirestore, type Firestore } from 'firebase/firestore';
+import { CONFIG, isFirebaseWebConfigured } from '@/constants/config';
 
-// Placeholder initializers
-export const firebaseApp = null; 
-export const auth = null;
-export const db = null;
+const firebaseConfig = {
+  apiKey: CONFIG.FIREBASE.API_KEY,
+  authDomain: CONFIG.FIREBASE.AUTH_DOMAIN,
+  projectId: CONFIG.FIREBASE.PROJECT_ID,
+  storageBucket: CONFIG.FIREBASE.STORAGE_BUCKET,
+  messagingSenderId: CONFIG.FIREBASE.MESSAGING_SENDER_ID,
+  appId: CONFIG.FIREBASE.APP_ID,
+};
 
-/**
- * TODO: Implement Firebase initialization logic here.
- * Ensure it only initializes once (using getApps().length check).
- */
+let app: FirebaseApp | undefined;
+let auth: Auth | undefined;
+let db: Firestore | undefined;
+
+function getApp(): FirebaseApp | null {
+  if (!isFirebaseWebConfigured()) {
+    return null;
+  }
+  if (!app) {
+    app = getApps().length ? getApps()[0]! : initializeApp(firebaseConfig);
+  }
+  return app;
+}
+
+export function getFirebaseAuth(): Auth | null {
+  const a = getApp();
+  if (!a) return null;
+  if (!auth) {
+    auth = getAuth(a);
+  }
+  return auth;
+}
+
+export function getFirebaseDb(): Firestore | null {
+  const a = getApp();
+  if (!a) return null;
+  if (!db) {
+    db = getFirestore(a);
+  }
+  return db;
+}
