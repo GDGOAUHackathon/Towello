@@ -452,7 +452,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="pb-20">
+        <section className="pb-10">
           <Card className="border-[#F0C040]/45 bg-zinc-900 p-10 text-center shadow-[0_24px_65px_-36px_rgba(240,192,64,0.95)] dark:bg-zinc-950">
             <h3 className="text-3xl font-semibold text-zinc-100 md:text-4xl">
               Start analyzing your portfolio today
@@ -466,8 +466,8 @@ export default function Home() {
           </Card>
         </section>
 
-        <footer className="border-t border-zinc-200 py-8 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
-          <div className="flex flex-col items-center justify-between gap-3 text-center md:flex-row md:text-left">
+        <footer className="border-t border-zinc-200 py-3 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
+          <div className="flex flex-col items-center justify-between gap-2 text-center md:flex-row md:text-left">
             <p>
               <span className="font-semibold text-zinc-900 dark:text-zinc-100">
                 Bayse Portfolio Tracker
