@@ -22,9 +22,10 @@ export async function GET(req: NextRequest) {
       { data: null, error: 'GET /api/portfolio not implemented yet — awaiting developer.' },
       { status: 501 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to fetch portfolio';
     return NextResponse.json(
-      { data: null, error: error.message || 'Failed to fetch portfolio' },
+      { data: null, error: message },
       { status: 500 }
     );
   }

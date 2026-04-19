@@ -19,9 +19,10 @@ export async function POST(req: NextRequest) {
       { data: null, error: 'POST /api/analyze not implemented yet — awaiting AI Engineer.' },
       { status: 501 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to generate analysis';
     return NextResponse.json(
-      { data: null, error: error.message || 'Failed to generate analysis' },
+      { data: null, error: message },
       { status: 500 }
     );
   }

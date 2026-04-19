@@ -22,9 +22,10 @@ export async function GET(req: NextRequest) {
       { data: null, error: 'GET /api/pnl not implemented yet — awaiting developer.' },
       { status: 501 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to fetch PnL data';
     return NextResponse.json(
-      { data: null, error: error.message || 'Failed to fetch PnL data' },
+      { data: null, error: message },
       { status: 500 }
     );
   }

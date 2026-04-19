@@ -16,6 +16,6 @@ export interface AIAnalysisResult {
 }
 
 export interface AnalysisRequest {
-  portfolioData: any; // Shape depends on portfolio types
+  portfolioData: unknown; // Shape depends on portfolio types
   focusArea?: string;
 }
