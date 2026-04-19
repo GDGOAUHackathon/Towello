@@ -12,7 +12,8 @@ export class PortfolioService {
    * Loads the portfolio for the Bayse account tied to BAYSE_PUBLIC_KEY.
    * (Per-user keys can be added later via auth.)
    */
-  async getUserPortfolio(_userId: string): Promise<UserPortfolioResult> {
+  async getUserPortfolio(userId: string): Promise<UserPortfolioResult> {
+    void userId;
     const raw = await getBayseClient().getPortfolio();
     return mapBaysePortfolioToApp(raw);
   }

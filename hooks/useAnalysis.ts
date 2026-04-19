@@ -1,29 +1,37 @@
-/**
- * Use Analysis Hook
- * 
- * Responsibility: Handle the generation and retrieval of AI analysis.
- * Owner: Frontend Engineer
- * Flow: Component → Hook → /api/analyze (POST)
- * Implementation: Use a mutation/trigger pattern to request new analysis.
- */
+'use client';
 
-// import useSWRMutation from 'swr/mutation';
-// import { ROUTES } from '@/constants/routes';
-
-async function sendRequest(url: string, { arg }: { arg: { focusArea?: string } }) {
-  return fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(arg),
-  }).then(res => res.json());
-}
+import { useCallback, useState } from 'react';
+import { ROUTES } from '@/constants/routes';
+import type { ApiResponse } from '@/types/api';
+import type { AIAnalysisResult } from '@/types/analysis';
 
 export function useAnalysis() {
+  const [data, setData] = useState<AIAnalysisResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setLoading] = useState(false);
+
+  const runAnalysis = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(ROUTES.API.ANALYZE, { method: 'POST' });
+      const json = (await res.json()) as ApiResponse<AIAnalysisResult>;
+      if (!res.ok || json.error || json.data === null) {
+        throw new Error(json.error ?? `Request failed (${res.status})`);
+      }
+      setData(json.data);
+    } catch (e) {
+      setData(null);
+      setError(e instanceof Error ? e.message : 'Analysis failed');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
-    generateAnalysis: async (focusArea?: string) => {
-      console.error('generateAnalysis NOT IMPLEMENTED');
-    },
-    isGenerating: false,
-    analysisResult: null,
-    error: 'useAnalysis NOT IMPLEMENTED—Awaiting AI Integration',
+    analysis: data,
+    error,
+    isLoading,
+    runAnalysis,
   };
 }

@@ -22,6 +22,10 @@ function parseAnalysisJson(text: string): AIAnalysisResult {
     ? parsed.insights.map(String).slice(0, 5)
     : [];
 
+  while (insights.length < 3) {
+    insights.push('—');
+  }
+
   const risk = parsed.riskLevel;
   const riskLevel =
     risk === 'LOW' || risk === 'MEDIUM' || risk === 'HIGH'
@@ -30,7 +34,7 @@ function parseAnalysisJson(text: string): AIAnalysisResult {
 
   return {
     summary: String(parsed.summary ?? 'Analysis unavailable.'),
-    insights: insights.length >= 3 ? insights.slice(0, 3) : [...insights, ...Array(3 - insights.length).fill('—')],
+    insights: insights.slice(0, 3),
     riskLevel,
     confidenceScore:
       typeof parsed.confidenceScore === 'number'

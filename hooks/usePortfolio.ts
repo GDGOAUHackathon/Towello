@@ -1,26 +1,26 @@
-/**
- * Use Portfolio Hook
- * 
- * Responsibility: Provide portfolio data and loading states to the frontend.
- * Owner: Frontend Engineer
- * Flow: Component → Hook → API Fetcher → API Route
- * Implementation: Use SWR or React Query to fetch from `/api/portfolio` and handle data/error states.
- */
+'use client';
 
-// import useSWR from 'swr';
-// import { fetcher } from '@/lib/utils/fetcher';
-// import { ROUTES } from '@/constants/routes';
+import useSWR from 'swr';
+import { ROUTES } from '@/constants/routes';
+import { apiGet } from '@/lib/utils/fetcher';
+import type { PortfolioPosition, PortfolioSummary } from '@/types/portfolio';
+
+type PortfolioPayload = {
+  positions: PortfolioPosition[];
+  summary: PortfolioSummary;
+};
 
 export function usePortfolio() {
-  /**
-   * Example SWR implementation:
-   * const { data, error, isLoading } = useSWR(ROUTES.API.PORTFOLIO, fetcher);
-   */
+  const { data, error, isLoading, mutate } = useSWR(
+    ROUTES.API.PORTFOLIO,
+    () => apiGet<PortfolioPayload>(ROUTES.API.PORTFOLIO)
+  );
 
   return {
-    portfolio: null,
-    summary: null,
-    isLoading: false,
-    error: 'usePortfolio NOT IMPLEMENTED—Awaiting Backend Integration',
+    portfolio: data?.positions ?? null,
+    summary: data?.summary ?? null,
+    isLoading,
+    error: error instanceof Error ? error.message : error ? String(error) : null,
+    refresh: mutate,
   };
 }
