@@ -167,14 +167,18 @@ export default function Home() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-30 md:px-8 md:pt-36">
-        <section id="home" className="grid items-center gap-12 pb-24 lg:grid-cols-2">
+        <section
+          id="home"
+          className="grid items-center gap-12 pb-24 lg:grid-cols-2"
+        >
           <div className="animate-[fade-in_0.7s_ease-out]">
             <Badge>Premium Fintech Experience</Badge>
             <h1 className="mt-6 text-4xl font-semibold leading-[1.03] tracking-tight md:text-6xl">
               Turn Your Portfolio Into Intelligence
             </h1>
             <p className="mt-6 max-w-xl text-base text-zinc-400 md:text-lg">
-              Track your positions, analyze performance, and get AI-powered insights instantly.
+              Track your positions, analyze performance, and get AI-powered
+              insights instantly.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Button className="group gap-2">
@@ -198,16 +202,28 @@ export default function Home() {
           <Card className="animate-[slide-in_0.8s_ease-out] border-zinc-800 p-4">
             <div className="grid grid-cols-3 gap-3">
               <Card className="bg-zinc-900/80 p-4">
-                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">Value</p>
-                <p className="mt-2 text-xl font-semibold text-zinc-100">$241,820</p>
+                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">
+                  Value
+                </p>
+                <p className="mt-2 text-xl font-semibold text-zinc-100">
+                  $241,820
+                </p>
               </Card>
               <Card className="bg-zinc-900/80 p-4">
-                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">Return</p>
-                <p className="mt-2 text-xl font-semibold text-emerald-400">+8.4%</p>
+                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">
+                  Return
+                </p>
+                <p className="mt-2 text-xl font-semibold text-emerald-400">
+                  +8.4%
+                </p>
               </Card>
               <Card className="bg-zinc-900/80 p-4">
-                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">Win Rate</p>
-                <p className="mt-2 text-xl font-semibold text-zinc-100">72.4%</p>
+                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">
+                  Win Rate
+                </p>
+                <p className="mt-2 text-xl font-semibold text-zinc-100">
+                  72.4%
+                </p>
               </Card>
             </div>
             <Card className="mt-4 bg-zinc-900/80 p-4">
@@ -267,11 +283,17 @@ export default function Home() {
               <p className="font-semibold text-zinc-100">Insight Summary</p>
               <ul className="mt-3 list-disc space-y-2 pl-5">
                 <li>
-                  You are heavily concentrated in sports markets (62%). Consider diversifying to
-                  reduce volatility.
+                  You are heavily concentrated in sports markets (62%). Consider
+                  diversifying to reduce volatility.
                 </li>
-                <li>Political event positions have the highest downside correlation this week.</li>
-                <li>Rebalancing 8-10% into macro contracts improves risk-adjusted return profile.</li>
+                <li>
+                  Political event positions have the highest downside
+                  correlation this week.
+                </li>
+                <li>
+                  Rebalancing 8-10% into macro contracts improves risk-adjusted
+                  return profile.
+                </li>
               </ul>
               <p className="mt-4 text-emerald-400">Confidence: 93%</p>
             </div>
@@ -285,23 +307,35 @@ export default function Home() {
               Everything you need to understand your portfolio - at a glance.
             </h3>
             <p className="mt-5 max-w-lg text-zinc-400">
-              From high-level KPIs to position-level detail, Bayse gives you a focused command
-              center for faster decisions.
+              From high-level KPIs to position-level detail, Bayse gives you a
+              focused command center for faster decisions.
             </p>
           </div>
           <Card className="border-zinc-800 p-4">
             <div className="grid gap-4 sm:grid-cols-3">
               <Card className="bg-zinc-900/85 p-4">
-                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">Portfolio</p>
-                <p className="mt-2 text-xl font-semibold text-zinc-100">$241,820</p>
+                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">
+                  Portfolio
+                </p>
+                <p className="mt-2 text-xl font-semibold text-zinc-100">
+                  $241,820
+                </p>
               </Card>
               <Card className="bg-zinc-900/85 p-4">
-                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">Exposure</p>
-                <p className="mt-2 text-xl font-semibold text-zinc-100">67.3%</p>
+                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">
+                  Exposure
+                </p>
+                <p className="mt-2 text-xl font-semibold text-zinc-100">
+                  67.3%
+                </p>
               </Card>
               <Card className="bg-zinc-900/85 p-4">
-                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">Opportunity</p>
-                <p className="mt-2 text-xl font-semibold text-[#F0C040]">High</p>
+                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">
+                  Opportunity
+                </p>
+                <p className="mt-2 text-xl font-semibold text-[#F0C040]">
+                  High
+                </p>
               </Card>
             </div>
             <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
@@ -365,15 +399,23 @@ export default function Home() {
           <div className="mx-auto mt-10 grid max-w-5xl gap-4 md:grid-cols-3">
             <Card className="border-zinc-800/90 p-5">
               <Gem className="size-5 text-[#F0C040]" />
-              <p className="mt-3 text-sm text-zinc-300">Prediction markets are scaling rapidly across global events.</p>
+              <p className="mt-3 text-sm text-zinc-300">
+                Prediction markets are scaling rapidly across global events.
+              </p>
             </Card>
             <Card className="border-zinc-800/90 p-5">
               <ChartColumn className="size-5 text-[#F0C040]" />
-              <p className="mt-3 text-sm text-zinc-300">Most traders lack intelligent insight into concentration and risk.</p>
+              <p className="mt-3 text-sm text-zinc-300">
+                Most traders lack intelligent insight into concentration and
+                risk.
+              </p>
             </Card>
             <Card className="border-zinc-800/90 p-5">
               <Bot className="size-5 text-[#F0C040]" />
-              <p className="mt-3 text-sm text-zinc-300">Bayse adds an AI layer to improve decision quality and execution speed.</p>
+              <p className="mt-3 text-sm text-zinc-300">
+                Bayse adds an AI layer to improve decision quality and execution
+                speed.
+              </p>
             </Card>
           </div>
         </section>
@@ -395,8 +437,10 @@ export default function Home() {
         <footer className="border-t border-zinc-800 py-8 text-sm text-zinc-400">
           <div className="flex flex-col items-center justify-between gap-3 text-center md:flex-row md:text-left">
             <p>
-              <span className="font-semibold text-zinc-100">Bayse Portfolio Tracker</span> • GDG
-              Hackathon 2026
+              <span className="font-semibold text-zinc-100">
+                Bayse Portfolio Tracker
+              </span>{" "}
+              • GDG Hackathon 2026
             </p>
             <div className="flex items-center gap-4">
               <Link className="hover:text-[#F0C040]" href="#">

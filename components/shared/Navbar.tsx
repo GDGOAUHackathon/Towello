@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import Toggle from "@/components/toggle";
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -48,6 +49,7 @@ export default function Navbar() {
             </ul>
 
             <div className="hidden items-center gap-2 lg:flex">
+              <Toggle />
               <button type="button" className={buttonClass("ghost")}>
                 Login
               </button>
@@ -56,15 +58,22 @@ export default function Navbar() {
               </button>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setIsOpen((prev) => !prev)}
-              className="inline-flex size-10 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900/50 text-zinc-200 transition-all duration-300 hover:border-[#F0C040]/70 hover:text-[#F0C040] lg:hidden"
-              aria-label="Toggle menu"
-              aria-expanded={isOpen}
-            >
-              {isOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-            </button>
+            <div className="flex items-center gap-2 lg:hidden">
+              <Toggle />
+              <button
+                type="button"
+                onClick={() => setIsOpen((prev) => !prev)}
+                className="inline-flex size-10 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900/50 text-zinc-200 transition-all duration-300 hover:border-[#F0C040]/70 hover:text-[#F0C040]"
+                aria-label="Toggle menu"
+                aria-expanded={isOpen}
+              >
+                {isOpen ? (
+                  <X className="size-5" />
+                ) : (
+                  <Menu className="size-5" />
+                )}
+              </button>
+            </div>
           </div>
 
           {isOpen ? (
@@ -83,6 +92,9 @@ export default function Navbar() {
                 ))}
               </ul>
               <div className="grid grid-cols-2 gap-2">
+                <div className="col-span-2 flex justify-center pb-1">
+                  <Toggle />
+                </div>
                 <button type="button" className={buttonClass("ghost")}>
                   Login
                 </button>
