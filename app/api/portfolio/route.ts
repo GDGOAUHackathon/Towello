@@ -1,14 +1,22 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyFirebaseRequest } from '@/lib/auth/verify-request';
 import { portfolioService } from '@/services/portfolio.service';
 import { BayseApiError } from '@/lib/bayse/errors';
 import type { ApiResponse } from '@/types/api';
 import type { PortfolioPosition, PortfolioSummary } from '@/types/portfolio';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = await verifyFirebaseRequest(req);
+  if ('error' in auth) {
+    return NextResponse.json(
+      { data: null, error: auth.error },
+      { status: auth.status }
+    );
+  }
+
   try {
-    const userId = 'mvp-user';
     const { positions, summary } =
-      await portfolioService.getUserPortfolio(userId);
+      await portfolioService.getUserPortfolio(auth.uid);
 
     const body: ApiResponse<{
       positions: PortfolioPosition[];
@@ -29,6 +37,8 @@ export async function GET() {
       error: message,
     };
 
-    return NextResponse.json(body, { status: status >= 400 && status < 600 ? status : 500 });
+    return NextResponse.json(body, {
+      status: status >= 400 && status < 600 ? status : 500,
+    });
   }
 }

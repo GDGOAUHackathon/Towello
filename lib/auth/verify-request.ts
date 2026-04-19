@@ -19,8 +19,9 @@ export async function verifyFirebaseRequest(req: NextRequest): Promise<AuthResul
     return { error: 'Sign in required', status: 401 };
   }
 
+  let auth: ReturnType<typeof getAdminAuth>;
   try {
-    getAdminAuth();
+    auth = getAdminAuth();
   } catch {
     return {
       error:
@@ -30,7 +31,6 @@ export async function verifyFirebaseRequest(req: NextRequest): Promise<AuthResul
   }
 
   try {
-    const auth = getAdminAuth();
     const decoded = await auth.verifyIdToken(token);
     return { uid: decoded.uid };
   } catch {

@@ -1,16 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyFirebaseRequest } from '@/lib/auth/verify-request';
 import { pnlService } from '@/services/pnl.service';
 import { BayseApiError } from '@/lib/bayse/errors';
 import type { ApiResponse } from '@/types/api';
 import type { PnLHistory } from '@/types/pnl';
 
 export async function GET(req: NextRequest) {
+  const auth = await verifyFirebaseRequest(req);
+  if ('error' in auth) {
+    return NextResponse.json(
+      { data: null, error: auth.error },
+      { status: auth.status }
+    );
+  }
+
   const { searchParams } = new URL(req.url);
   const timeframe = searchParams.get('timeframe') ?? '1M';
 
   try {
-    const userId = 'mvp-user';
-    const data = await pnlService.getPnLHistory(userId, timeframe);
+    const data = await pnlService.getPnLHistory(auth.uid, timeframe);
 
     const body: ApiResponse<PnLHistory> = {
       data,
@@ -28,6 +36,8 @@ export async function GET(req: NextRequest) {
       error: message,
     };
 
-    return NextResponse.json(body, { status: status >= 400 && status < 600 ? status : 500 });
+    return NextResponse.json(body, {
+      status: status >= 400 && status < 600 ? status : 500,
+    });
   }
 }
