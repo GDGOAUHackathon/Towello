@@ -1,6 +1,6 @@
 /**
  * API Types
- * 
+ *
  * Responsibility: Standardize API request/response wrappers.
  * Owner: Backend Engineer
  * Implementation: Add pagination, filtering, and error handling structures.
@@ -15,5 +15,5 @@ export interface ApiResponse<T> {
 export interface ApiError {
   code: string;
   message: string;
-  details?: any;
+  details?: unknown;
 }

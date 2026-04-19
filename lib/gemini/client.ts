@@ -1,6 +1,6 @@
 /**
  * Google Gemini API Client
- * 
+ *
  * Responsibility: Handle all communication with the Google Gemini AI API.
  * Owner: AI Engineer
  * Implementation: Setup the GenerativeModel instance and methods for sending prompts.
@@ -10,7 +10,7 @@
 // import { CONFIG } from '@/constants/config';
 
 export class GeminiClient {
-  private genAI: any;
+  private genAI: unknown;
 
   constructor() {
     this.genAI = null; // new GoogleGenerativeAI(CONFIG.GEMINI.API_KEY);
@@ -19,7 +19,7 @@ export class GeminiClient {
   /**
    * Generates analysis based on providing prompting and data.
    */
-  async generateAnalysis(prompt: string, data: any) {
+  async generateAnalysis(prompt: string, data: unknown) {
     // TODO: Implement actual AI generation logic
     // const model = this.genAI.getGenerativeModel({ model: CONFIG.GEMINI.MODEL });
     return "Placeholder AI response";
