@@ -1,25 +1,24 @@
-/**
- * Use PnL Hook
- * 
- * Responsibility: Fetch and manage Profit and Loss history for charting.
- * Owner: Frontend Engineer
- * Flow: Component → Hook → /api/pnl
- * Implementation: Fetch historical data based on a provided timeframe.
- */
+'use client';
 
-// import useSWR from 'swr';
-// import { fetcher } from '@/lib/utils/fetcher';
-// import { ROUTES } from '@/constants/routes';
+import useSWR from 'swr';
+import { ROUTES } from '@/constants/routes';
+import { useAuth } from '@/components/providers/AuthProvider';
+import { apiGet } from '@/lib/utils/fetcher';
+import type { PnLHistory } from '@/types/pnl';
 
 export function usePnL(timeframe: string = '1M') {
-  /**
-   * Example: 
-   * const { data, error } = useSWR(`${ROUTES.API.PNL}?timeframe=${timeframe}`, fetcher);
-   */
+  const { user, loading: authLoading, getIdToken } = useAuth();
+  const keyPath = `${ROUTES.API.PNL}?timeframe=${encodeURIComponent(timeframe)}`;
+
+  const { data, error, isLoading, mutate } = useSWR(
+    user && !authLoading ? [keyPath, user.uid] : null,
+    () => apiGet<PnLHistory>(keyPath, getIdToken)
+  );
 
   return {
-    snapshots: [],
-    isLoading: false,
-    error: 'usePnL NOT IMPLEMENTED—Awaiting Backend Integration',
+    pnl: data ?? null,
+    isLoading: authLoading || (!!user && isLoading),
+    error: error instanceof Error ? error.message : error ? String(error) : null,
+    refresh: mutate,
   };
 }

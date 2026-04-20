@@ -1,25 +1,37 @@
-/**
- * PnL Chart Component
- *
- * Responsibility: Visualize PnL history.
- * Owner: Frontend Engineer
- * Implementation: Use a library like Recharts or Chart.js to render a line chart of PnL snapshots.
- */
+'use client';
 
-import React from "react";
-// import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
+import React from 'react';
+import type { PnLSnapshot } from '@/types/pnl';
+import { formatCurrency, formatPercentage } from '@/lib/utils/format';
 
-type PnLPoint = {
-  timestamp: string;
-  value: number;
-};
+export const PnLChart: React.FC<{ snapshots: PnLSnapshot[] }> = ({
+  snapshots,
+}) => {
+  if (!snapshots.length) {
+    return (
+      <div className="flex h-48 w-full items-center justify-center rounded-xl border border-dashed border-neutral-200 text-sm text-neutral-500 dark:border-neutral-800">
+        No PnL snapshots for this period.
+      </div>
+    );
+  }
 
-export const PnLChart: React.FC<{ data: PnLPoint[] }> = ({ data }) => {
+  const s = snapshots[0];
+
   return (
-    <div className="w-full h-64 border-2 border-dashed border-gray-200 flex items-center justify-center">
-      <span className="text-gray-400">
-        CHART NOT BUILT YET — Awaiting Developer
-      </span>
+    <div className="flex h-48 w-full flex-col justify-center rounded-xl border border-neutral-200 bg-neutral-50/80 px-6 dark:border-neutral-800 dark:bg-neutral-900/40">
+      <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">
+        Realized PnL (period)
+      </p>
+      <p className="mt-2 text-3xl font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
+        {formatCurrency(s.realizedPnL)}
+      </p>
+      <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+        ROI {formatPercentage(s.roi)} · total {formatCurrency(s.totalPnL)}
+      </p>
+      <p className="mt-4 text-xs text-neutral-500">
+        Bayse returns period aggregates for PnL; intraday time series are not
+        exposed on this endpoint.
+      </p>
     </div>
   );
 };

@@ -1,9 +1,5 @@
 /**
  * PnL (Profit and Loss) Types
- * 
- * Responsibility: Define models for tracking financial performance.
- * Owner: Backend Engineer
- * Implementation: Add time-series data structures for charting and multi-currency support.
  */
 
 export interface PnLSnapshot {
@@ -14,7 +10,26 @@ export interface PnLSnapshot {
   roi: number;
 }
 
+export type PnLTimeframe = '1D' | '1W' | '1M' | '1Y' | 'ALL';
+
+export interface PnLBreakdownItem {
+  eventId: string;
+  eventTitle: string;
+  realizedPnl: number;
+  currency: string;
+  lastActivity: string;
+}
+
 export interface PnLHistory {
   snapshots: PnLSnapshot[];
-  timeframe: '1D' | '1W' | '1M' | '1Y' | 'ALL';
+  timeframe: PnLTimeframe;
+  /** Aggregates from Bayse when using live API */
+  realizedPnl?: number;
+  realizedPnlPercent?: number;
+  settlementPnl?: number;
+  tradePnl?: number;
+  wins?: number;
+  losses?: number;
+  currency?: string;
+  breakdown?: PnLBreakdownItem[];
 }

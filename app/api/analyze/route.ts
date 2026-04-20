@@ -1,36 +1,40 @@
-/**
- * AI Analysis API Route
- *
- * Responsibility: Generate AI insights for the user's portfolio.
- * Owner: AI Engineer
- * Flow: Request → auth check → Analysis Service → Response
- * Implementation: Trigger the generation of a new AI report based on the latest data.
- */
-
-import { NextRequest, NextResponse } from "next/server";
-// import { analysisService } from '@/services/analysis.service';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyFirebaseRequest } from '@/lib/auth/verify-request';
+import { analysisService } from '@/services/analysis.service';
+import { BayseApiError } from '@/lib/bayse/errors';
+import type { ApiResponse } from '@/types/api';
+import type { AIAnalysisResult } from '@/types/analysis';
 
 export async function POST(req: NextRequest) {
-  try {
-    // 1. Authenticate user
-    const userId = "placeholder-user-id";
-
+  const auth = await verifyFirebaseRequest(req);
+  if ('error' in auth) {
     return NextResponse.json(
-      {
-        data: null,
-        error: "POST /api/analyze not implemented yet — awaiting AI Engineer.",
-      },
-      { status: 501 },
+      { data: null, error: auth.error },
+      { status: auth.status }
     );
+  }
+
+  try {
+    const report = await analysisService.generatePortfolioReport(auth.uid);
+
+    const body: ApiResponse<AIAnalysisResult> = {
+      data: report,
+      error: null,
+    };
+
+    return NextResponse.json(body);
   } catch (error: unknown) {
     const message =
-      error instanceof Error ? error.message : "Failed to generate analysis";
-    return NextResponse.json({ data: null, error: message }, { status: 500 });
+      error instanceof Error ? error.message : 'Failed to generate analysis';
+    const status = error instanceof BayseApiError ? error.status : 500;
+
+    const body: ApiResponse<null> = {
+      data: null,
+      error: message,
+    };
+
+    return NextResponse.json(body, {
+      status: status >= 400 && status < 600 ? status : 500,
+    });
   }
 }
-
-/**
- * Request: POST /api/analyze
- * Body: { focusArea?: string }
- * Response: { data: { summary: string, insights: string[] }, error: null }
- */

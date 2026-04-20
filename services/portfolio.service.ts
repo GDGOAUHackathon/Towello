@@ -1,25 +1,21 @@
-/**
- * Portfolio Service
- * 
- * Responsibility: Orchestrate portfolio-related business logic.
- * Owner: Backend Engineer
- * Flow: API route → service → external client (Bayse Markets)
- * Implementation: Implement methods to fetch raw positions from BayseClient, map them to internal types, and optionally cache them in Firestore.
- */
+import { getBayseClient } from '@/lib/bayse/client';
+import { mapBaysePortfolioToApp } from '@/lib/bayse/map';
+import type { PortfolioPosition, PortfolioSummary } from '@/types/portfolio';
 
-// import { bayseClient } from '@/lib/bayse/client';
-// import { PortfolioPosition } from '@/types/portfolio';
+export interface UserPortfolioResult {
+  positions: PortfolioPosition[];
+  summary: PortfolioSummary;
+}
 
 export class PortfolioService {
   /**
-   * Retrieves all positions for a user and calculates current total value.
+   * Loads the portfolio for the Bayse account tied to BAYSE_PUBLIC_KEY.
+   * (Per-user keys can be added later via auth.)
    */
-  async getUserPortfolio(userId: string) {
-    // 1. Fetch raw data from Bayse
-    // 2. Transform raw data to PortfolioPosition types
-    // 3. (Optional) Save/Update in DB for history
-    throw new Error('PortfolioService.getUserPortfolio not implemented yet — awaiting Backend Engineer.');
-
+  async getUserPortfolio(userId: string): Promise<UserPortfolioResult> {
+    void userId;
+    const raw = await getBayseClient().getPortfolio();
+    return mapBaysePortfolioToApp(raw);
   }
 }
 

@@ -1,18 +1,25 @@
-/**
- * Firebase Admin SDK
- * 
- * Responsibility: Initialize and export Firebase Admin for server-side operations.
- * Owner: Backend Engineer
- * Implementation: Setup service account credentials and exported admin instance for use in API routes.
- */
+import admin from 'firebase-admin';
 
-// import admin from 'firebase-admin';
+export function getAdminAuth(): admin.auth.Auth {
+  if (!admin.apps.length) {
+    const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+    const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
+    const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
-// Placeholder initializer
-export const adminDb = null;
-export const adminAuth = null;
+    if (!projectId || !clientEmail || !privateKey) {
+      throw new Error(
+        'Firebase Admin credentials are missing (NEXT_PUBLIC_FIREBASE_PROJECT_ID, FIREBASE_ADMIN_CLIENT_EMAIL, FIREBASE_ADMIN_PRIVATE_KEY).'
+      );
+    }
 
-/**
- * TODO: Implement Firebase Admin initialization logic here.
- * Use environment variables for the service account key.
- */
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId,
+        clientEmail,
+        privateKey,
+      }),
+    });
+  }
+
+  return admin.auth();
+}

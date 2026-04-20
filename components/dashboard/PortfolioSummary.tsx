@@ -1,19 +1,64 @@
-/**
- * Portfolio Summary Component
- * 
- * Responsibility: Display key portfolio metrics (Total Value, 24h Change).
- * Owner: Frontend Engineer
- * Implementation: Fetch data using usePortfolio hook and display stats with conditional colors (green for profit, red for loss).
- */
+'use client';
 
 import React from 'react';
-// import { usePortfolio } from '@/hooks/usePortfolio';
-// import { formatCurrency, formatPercentage } from '@/lib/utils/format';
+import { usePortfolio } from '@/hooks/usePortfolio';
+import { formatCurrency, formatPercentage } from '@/lib/utils/format';
 
 export const PortfolioSummary: React.FC = () => {
+  const { summary, isLoading, error } = usePortfolio();
+
+  if (isLoading) {
+    return (
+      <div className="rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-950">
+        <p className="text-sm text-neutral-500">Loading portfolio…</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200">
+        {error}
+      </div>
+    );
+  }
+
+  if (!summary) {
+    return null;
+  }
+
+  const gain = summary.dailyChange >= 0;
+
   return (
-    <div className="p-4 border-2 border-dashed border-gray-200 text-center text-gray-400">
-      PORTFOLIO SUMMARY NOT BUILT YET — Awaiting Developer
+    <div className="grid gap-4 rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-950 sm:grid-cols-3">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">
+          Total value
+        </p>
+        <p className="mt-1 text-2xl font-semibold tabular-nums">
+          {formatCurrency(summary.totalValue)}
+        </p>
+      </div>
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">
+          vs cost basis
+        </p>
+        <p
+          className={`mt-1 text-2xl font-semibold tabular-nums ${
+            gain ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+          }`}
+        >
+          {formatCurrency(summary.dailyChange)} ({formatPercentage(summary.dailyChangePercentage)})
+        </p>
+      </div>
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">
+          Positions
+        </p>
+        <p className="mt-1 text-2xl font-semibold tabular-nums">
+          {summary.positionsCount}
+        </p>
+      </div>
     </div>
   );
 };

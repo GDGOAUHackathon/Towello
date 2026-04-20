@@ -1,38 +1,44 @@
-/**
- * Portfolio API Route
- *
- * Responsibility: Entry point for portfolio data fetching.
- * Owner: Backend Engineer
- * Flow: Request → auth check → Portfolio Service → Response
- * Implementation: Verify session/token, call portfolioService.getUserPortfolio, and return JSON.
- */
-
-import { NextRequest, NextResponse } from "next/server";
-// import { portfolioService } from '@/services/portfolio.service';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyFirebaseRequest } from '@/lib/auth/verify-request';
+import { portfolioService } from '@/services/portfolio.service';
+import { BayseApiError } from '@/lib/bayse/errors';
+import type { ApiResponse } from '@/types/api';
+import type { PortfolioPosition, PortfolioSummary } from '@/types/portfolio';
 
 export async function GET(req: NextRequest) {
-  try {
-    // 1. Authenticate user
-    const userId = "placeholder-user-id";
-
-    // 2. Fetch data via service
-    // const data = await portfolioService.getUserPortfolio(userId);
-
+  const auth = await verifyFirebaseRequest(req);
+  if ('error' in auth) {
     return NextResponse.json(
-      {
-        data: null,
-        error: "GET /api/portfolio not implemented yet — awaiting developer.",
-      },
-      { status: 501 },
+      { data: null, error: auth.error },
+      { status: auth.status }
     );
+  }
+
+  try {
+    const { positions, summary } =
+      await portfolioService.getUserPortfolio(auth.uid);
+
+    const body: ApiResponse<{
+      positions: PortfolioPosition[];
+      summary: PortfolioSummary;
+    }> = {
+      data: { positions, summary },
+      error: null,
+    };
+
+    return NextResponse.json(body);
   } catch (error: unknown) {
     const message =
-      error instanceof Error ? error.message : "Failed to fetch portfolio";
-    return NextResponse.json({ data: null, error: message }, { status: 500 });
+      error instanceof Error ? error.message : 'Failed to fetch portfolio';
+    const status = error instanceof BayseApiError ? error.status : 500;
+
+    const body: ApiResponse<null> = {
+      data: null,
+      error: message,
+    };
+
+    return NextResponse.json(body, {
+      status: status >= 400 && status < 600 ? status : 500,
+    });
   }
 }
-
-/**
- * Request: GET /api/portfolio
- * Response: { data: { positions: [], summary: {} }, error: null }
- */
