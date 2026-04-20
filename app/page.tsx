@@ -240,7 +240,7 @@ export default function Home() {
                 <LineChart className="size-4 text-[#F0C040]" />
               </div>
               <div className="h-32 rounded-xl bg-[linear-gradient(120deg,rgba(240,192,64,0.28),rgba(240,192,64,0.12)_40%,rgba(24,24,27,0.06))] dark:bg-[linear-gradient(120deg,rgba(240,192,64,0.35),rgba(240,192,64,0.08)_40%,rgba(255,255,255,0.03))]" />
-            </Card>
+            </Card> 
             <Card className="mt-4 bg-white/80 p-4 dark:bg-zinc-900/80">
               <div className="mb-3 flex items-center justify-between text-sm text-zinc-600 dark:text-zinc-400">
                 <span>Top Exposure</span>
