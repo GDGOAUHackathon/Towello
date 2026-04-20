@@ -1,111 +1,59 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
-import Toggle from "@/components/toggle";
+import React from 'react';
+import Link from 'next/link';
+import { useAuth } from '@/components/providers/AuthProvider';
+import { ROUTES } from '@/constants/routes';
+import { CONFIG } from '@/constants/config';
 
-const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "Features", href: "#features" },
-  { label: "AI Analysis", href: "#ai-analysis" },
-  { label: "How It Works", href: "#how-it-works" },
-];
+const linkClass =
+  'text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100';
 
-function buttonClass(variant: "ghost" | "gold") {
-  if (variant === "gold") {
-    return "inline-flex items-center justify-center rounded-xl border border-[#F0C040]/80 bg-[#F0C040] px-4 py-2 text-sm font-semibold text-zinc-950 shadow-[0_16px_36px_-22px_rgba(240,192,64,0.95)] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110";
-  }
-
-  return "inline-flex items-center justify-center rounded-xl border border-zinc-300 bg-white/70 px-4 py-2 text-sm font-medium text-zinc-700 transition-all duration-300 hover:border-[#F0C040]/65 hover:text-[#B38914] dark:border-zinc-700/70 dark:bg-zinc-900/40 dark:text-zinc-200 dark:hover:text-[#F0C040]";
-}
-
-export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+export const Navbar: React.FC = () => {
+  const { user, loading, signOutUser } = useAuth();
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div className="mx-auto max-w-7xl px-4 pt-4 md:px-8">
-        <nav className="rounded-2xl border border-zinc-200/80 bg-white/70 px-4 py-3 backdrop-blur-xl shadow-[0_18px_38px_-28px_rgba(0,0,0,0.25)] dark:border-zinc-800/80 dark:bg-zinc-950/70 dark:shadow-[0_18px_38px_-28px_rgba(0,0,0,0.9)]">
-          <div className="flex items-center justify-between gap-4">
-            <Link
-              href="#home"
-              className="text-sm font-semibold tracking-[0.16em] text-zinc-900 transition-colors duration-300 hover:text-[#B38914] dark:text-zinc-100 dark:hover:text-[#F0C040]"
-            >
-              Bayse AI
-            </Link>
-
-            <ul className="hidden items-center gap-6 lg:flex">
-              {navLinks.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-zinc-600 transition-colors duration-300 hover:text-[#B38914] dark:text-zinc-300 dark:hover:text-[#F0C040]"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            <div className="hidden items-center gap-2 lg:flex">
-              <Toggle />
-              <button type="button" className={buttonClass("ghost")}>
-                Login
-              </button>
-              <button type="button" className={buttonClass("gold")}>
-                Get Started
-              </button>
-            </div>
-
-            <div className="flex items-center gap-2 lg:hidden">
-              <Toggle />
+    <header className="border-b border-neutral-200 bg-white/80 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/80">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
+        <Link
+          href={ROUTES.HOME}
+          className="text-sm font-semibold text-neutral-900 dark:text-neutral-100"
+        >
+          {CONFIG.APP.NAME}
+        </Link>
+        <nav className="flex flex-wrap items-center justify-center gap-4">
+          <Link href={ROUTES.DASHBOARD} className={linkClass}>
+            Dashboard
+          </Link>
+          <Link href={ROUTES.POSITIONS} className={linkClass}>
+            Positions
+          </Link>
+          <Link href={ROUTES.PNL} className={linkClass}>
+            PnL
+          </Link>
+          <Link href={ROUTES.ANALYSIS} className={linkClass}>
+            Analysis
+          </Link>
+          {!loading && user ? (
+            <>
+              <span className="hidden max-w-[140px] truncate text-xs text-neutral-500 sm:inline">
+                {user.email}
+              </span>
               <button
                 type="button"
-                onClick={() => setIsOpen((prev) => !prev)}
-                className="inline-flex size-10 items-center justify-center rounded-xl border border-zinc-300 bg-white/70 text-zinc-700 transition-all duration-300 hover:border-[#F0C040]/70 hover:text-[#B38914] dark:border-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-200 dark:hover:text-[#F0C040]"
-                aria-label="Toggle menu"
-                aria-expanded={isOpen}
+                onClick={() => void signOutUser()}
+                className={`${linkClass} border-0 bg-transparent p-0`}
               >
-                {isOpen ? (
-                  <X className="size-5" />
-                ) : (
-                  <Menu className="size-5" />
-                )}
+                Sign out
               </button>
-            </div>
-          </div>
-
-          {isOpen ? (
-            <div className="mt-4 space-y-4 rounded-xl border border-zinc-200 bg-white/80 p-4 lg:hidden dark:border-zinc-800 dark:bg-zinc-900/80">
-              <ul className="space-y-2">
-                {navLinks.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
-                      className="block rounded-lg px-3 py-2 text-sm text-zinc-600 transition-colors duration-300 hover:bg-zinc-100 hover:text-[#B38914] dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-[#F0C040]"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="col-span-2 flex justify-center pb-1">
-                  <Toggle />
-                </div>
-                <button type="button" className={buttonClass("ghost")}>
-                  Login
-                </button>
-                <button type="button" className={buttonClass("gold")}>
-                  Get Started
-                </button>
-              </div>
-            </div>
-          ) : null}
+            </>
+          ) : (
+            <Link href={ROUTES.LOGIN} className={linkClass}>
+              Sign in
+            </Link>
+          )}
         </nav>
       </div>
     </header>
   );
-}
+};

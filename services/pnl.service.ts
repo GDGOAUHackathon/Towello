@@ -1,33 +1,63 @@
-/**
- * PnL Service
- * 
- * Responsibility: Handle profit and loss calculations and historical tracking.
- * Owner: Backend Engineer
- * Flow: API route → service → database / external client
- * Implementation: Calculate PnL based on entry prices vs current market prices and fetch historical performance snapshots.
- */
+import { getBayseClient } from '@/lib/bayse/client';
+import { toBayseTimePeriod } from '@/lib/bayse/timeframe';
+import type { PnLHistory, PnLSnapshot } from '@/types/pnl';
+import type { BaysePnLResponse } from '@/lib/bayse/types';
 
-// import { adminDb } from '@/lib/firebase/admin';
+export type AppTimeframe = PnLHistory['timeframe'];
+
+function mapBaysePnLToHistory(
+  bayse: BaysePnLResponse,
+  timeframe: AppTimeframe
+): PnLHistory {
+  const now = new Date().toISOString();
+  const snapshot: PnLSnapshot = {
+    timestamp: now,
+    totalPnL: bayse.realizedPnl,
+    unrealizedPnL: 0,
+    realizedPnL: bayse.realizedPnl,
+    roi: bayse.realizedPnlPercent,
+  };
+
+  return {
+    timeframe,
+    snapshots: [snapshot],
+    realizedPnl: bayse.realizedPnl,
+    realizedPnlPercent: bayse.realizedPnlPercent,
+    settlementPnl: bayse.settlementPnl,
+    tradePnl: bayse.tradePnl,
+    wins: bayse.wins,
+    losses: bayse.losses,
+    currency: bayse.currency,
+    breakdown: bayse.breakdown ?? [],
+  };
+}
 
 export class PnLService {
-  /**
-   * Generates PnL snapshots for a given timeframe.
-   */
-  async getPnLHistory(userId: string, timeframe: string) {
-    // 1. Fetch historical snapshots from Firestore
-    // 2. Fetch current real-time prices to calculate 'current' snapshot
-    // 3. Return aggregated history
-    throw new Error('PnLService.getPnLHistory not implemented yet — awaiting Backend Engineer.');
+  async getPnLHistory(
+    _userId: string,
+    timeframe: string
+  ): Promise<PnLHistory> {
+    const tf = (['1D', '1W', '1M', '1Y', 'ALL'].includes(timeframe)
+      ? timeframe
+      : '1M') as AppTimeframe;
 
+    const timePeriod = toBayseTimePeriod(tf);
+    const bayse = await getBayseClient().getPnL({
+      timePeriod,
+      breakdown: true,
+      currency: 'USD',
+    });
+    return mapBaysePnLToHistory(bayse, tf);
   }
 
-  /**
-   * Calculates realized vs unrealized PnL for the current portfolio.
-   */
-  async calculateCurrentPnL(userId: string) {
-    // Logic for PnL calculation across all positions
-    throw new Error('PnLService.calculateCurrentPnL not implemented yet — awaiting Backend Engineer.');
-
+  async calculateCurrentPnL(_userId: string) {
+    const history = await this.getPnLHistory(_userId, '1M');
+    const snap = history.snapshots[0];
+    return {
+      realizedPnL: snap.realizedPnL,
+      roi: snap.roi,
+      currency: history.currency,
+    };
   }
 }
 

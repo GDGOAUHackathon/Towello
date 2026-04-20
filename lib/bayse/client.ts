@@ -1,37 +1,86 @@
-/**
- * Bayse Markets API Client
- * 
- * Responsibility: Handle all communication with the Bayse Markets external API.
- * Owner: Backend Engineer
- * Implementation: Implement methods for fetching live market prices, user balances, and historical trades.
- */
+import { requireBaysePublicKey, bayseApiBase } from '@/lib/config/server';
+import { BayseApiError } from '@/lib/bayse/errors';
+import type { BaysePnLResponse, BaysePortfolioResponse } from '@/lib/bayse/types';
 
-// import { CONFIG } from '@/constants/config';
+const JSON_HEADERS = { Accept: 'application/json' } as const;
 
-export class BayseClient {
-  private apiKey: string;
-  private secretKey: string;
-
-  constructor() {
-    this.apiKey = ''; // CONFIG.BAYSE.PUBLIC_KEY
-    this.secretKey = ''; // CONFIG.BAYSE.SECRET_KEY
+async function readBayseJson<T>(
+  res: Response
+): Promise<T> {
+  const text = await res.text();
+  if (!res.ok) {
+    throw new BayseApiError(
+      `Bayse API error (${res.status})`,
+      res.status,
+      text
+    );
   }
-
-  /**
-   * Fetches the current positions for a given user address or public key.
-   */
-  async getPositions(publicKey: string) {
-    // TODO: Implement actual API fetch logic
-    return [];
-  }
-
-  /**
-   * Fetches market data for specific assets.
-   */
-  async getMarketData(symbols: string[]) {
-    // TODO: Implement actual API fetch logic
-    return {};
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    throw new BayseApiError('Invalid JSON from Bayse API', res.status, text);
   }
 }
 
-export const bayseClient = new BayseClient();
+export class BayseClient {
+  private readonly publicKey: string;
+  private readonly baseUrl: string;
+
+  constructor(publicKey?: string, baseUrl?: string) {
+    this.publicKey = publicKey ?? requireBaysePublicKey();
+    this.baseUrl = baseUrl ?? bayseApiBase();
+  }
+
+  private readHeaders(): HeadersInit {
+    return {
+      ...JSON_HEADERS,
+      'X-Public-Key': this.publicKey,
+    };
+  }
+
+  async getPortfolio(): Promise<BaysePortfolioResponse> {
+    const url = `${this.baseUrl}/v1/pm/portfolio`;
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: this.readHeaders(),
+      cache: 'no-store',
+    });
+    return readBayseJson<BaysePortfolioResponse>(res);
+  }
+
+  async getPnL(params: {
+    timePeriod?: string;
+    breakdown?: boolean;
+    currency?: 'USD' | 'NGN';
+  }): Promise<BaysePnLResponse> {
+    const search = new URLSearchParams();
+    if (params.timePeriod) {
+      search.set('timePeriod', params.timePeriod);
+    }
+    if (params.breakdown !== undefined) {
+      search.set('breakdown', params.breakdown ? 'true' : 'false');
+    }
+    if (params.currency) {
+      search.set('currency', params.currency);
+    }
+
+    const qs = search.toString();
+    const url = `${this.baseUrl}/v1/pm/pnl${qs ? `?${qs}` : ''}`;
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: this.readHeaders(),
+      cache: 'no-store',
+    });
+    return readBayseJson<BaysePnLResponse>(res);
+  }
+}
+
+let singleton: BayseClient | undefined;
+
+/** Lazy singleton so missing env fails on first use, not at module load. */
+export function getBayseClient(): BayseClient {
+  if (!singleton) {
+    singleton = new BayseClient();
+  }
+  return singleton;
+}

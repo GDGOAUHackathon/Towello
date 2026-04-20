@@ -1,20 +1,22 @@
-/**
- * Formatting Utilities
- * 
- * Responsibility: Provide reusable functions for consistent data presentation.
- * Owner: Frontend Engineer
- * Implementation: Add currency, date, and percentage formatting using Intl.NumberFormat.
- */
+const currencyFmt = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 2,
+});
 
-export const formatCurrency = (value: number) => {
-  return 'NOT IMPLEMENTED';
-};
+export function formatCurrency(value: number): string {
+  return currencyFmt.format(value);
+}
 
-export const formatPercentage = (value: number) => {
-  return 'NOT IMPLEMENTED';
-};
+/** Value is already in percent units, e.g. 7.5 for 7.5%. */
+export function formatPercentage(value: number): string {
+  return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
+}
 
-export const formatDate = (date: string | Date) => {
-  return 'NOT IMPLEMENTED';
-};
-
+export function formatDate(date: string | Date): string {
+  const d = typeof date === 'string' ? new Date(date) : date;
+  return new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(d);
+}
