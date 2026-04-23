@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React from 'react';
-import type { PnLSnapshot } from '@/types/pnl';
-import { formatCurrency, formatPercentage } from '@/lib/utils/format';
+import React from "react";
+import type { PnLSnapshot } from "@/types/pnl";
+import { formatCurrency, formatPercentage } from "@/lib/utils/format";
 
 export const PnLChart: React.FC<{ snapshots: PnLSnapshot[] }> = ({
   snapshots,

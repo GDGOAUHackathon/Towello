@@ -94,9 +94,7 @@ export function DashboardNavbar({
             <p className="text-[0.62rem] uppercase tracking-[0.28em] text-zinc-500">
               Last updated
             </p>
-            <p className="mt-1 text-sm font-medium text-zinc-50">
-              {timeLabel}
-            </p>
+            <p className="mt-1 text-sm font-medium text-zinc-50">{timeLabel}</p>
           </div>
 
           <button

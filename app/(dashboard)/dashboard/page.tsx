@@ -491,9 +491,7 @@ export default function DashboardPage() {
                 <p className="mt-2 text-sm text-zinc-500">{insightLabel}</p>
               </div>
               <div className="rounded-2xl border border-white/5 bg-black/40 p-4">
-                <p className="text-sm font-medium text-zinc-50">
-                  Quick status
-                </p>
+                <p className="text-sm font-medium text-zinc-50">Quick status</p>
                 <p className="mt-2 text-sm text-zinc-500">
                   {pnl?.breakdown?.length
                     ? `${pnl.breakdown.length} realized events tracked in the current window.`
