@@ -62,7 +62,7 @@ export default function AnalyticsPage() {
         <button
           type="button"
           onClick={() => void runAnalysis()}
-          className="inline-flex items-center gap-2 rounded-2xl border border-[#F0C040]/25 bg-[linear-gradient(180deg,rgba(240,192,64,0.16),rgba(240,192,64,0.06))] px-4 py-2.5 text-sm font-medium text-[#F0F0F0] transition hover:border-[#F0C040]/45 hover:text-[#F0C040]"
+          className="inline-flex items-center gap-2 rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-2.5 text-sm font-medium text-zinc-50 transition hover:border-emerald-500/45 hover:text-emerald-400"
         >
           <Sparkles className="h-4 w-4" />
           Refresh analysis
@@ -70,7 +70,7 @@ export default function AnalyticsPage() {
       </div>
 
       {error ? (
-        <div className="rounded-3xl border border-[#2A2A2A] bg-[#1A1A1A] p-6 text-sm text-[#F87171]">
+        <div className="rounded-3xl border border-white/10 bg-zinc-950/50 p-6 text-sm text-red-400">
           {error}
         </div>
       ) : null}
@@ -87,11 +87,11 @@ export default function AnalyticsPage() {
               <div className="h-4 w-5/6 rounded-full bg-white/6" />
             </div>
           ) : analysis ? (
-            <p className="whitespace-pre-wrap text-sm leading-7 text-[#F0F0F0]">
+            <p className="whitespace-pre-wrap text-sm leading-7 text-zinc-50">
               {headline}
             </p>
           ) : (
-            <p className="text-sm text-[#888888]">
+            <p className="text-sm text-zinc-500">
               Run analysis to populate the overview.
             </p>
           )}
@@ -106,14 +106,14 @@ export default function AnalyticsPage() {
               {analysis.insights.map((item, index) => (
                 <li
                   key={`${item}-${index}`}
-                  className="rounded-2xl border border-white/5 bg-[#111111] px-4 py-3 text-sm text-[#F0F0F0]"
+                  className="rounded-2xl border border-white/5 bg-black/40 px-4 py-3 text-sm text-zinc-50"
                 >
                   {item}
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-[#888888]">
+            <p className="text-sm text-zinc-500">
               No insights yet. Run the analyzer first.
             </p>
           )}

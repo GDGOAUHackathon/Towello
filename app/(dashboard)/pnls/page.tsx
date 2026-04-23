@@ -54,7 +54,7 @@ export default function PnLsPage() {
       />
 
       {error ? (
-        <div className="rounded-3xl border border-[#2A2A2A] bg-[#1A1A1A] p-6 text-sm text-[#F87171]">
+        <div className="rounded-3xl border border-white/10 bg-zinc-950/50 p-6 text-sm text-red-400">
           {error}
         </div>
       ) : null}
@@ -68,16 +68,16 @@ export default function PnLsPage() {
         ) : pnl ? (
           <PnLChart snapshots={pnl.snapshots} />
         ) : (
-          <div className="rounded-2xl border border-dashed border-[#2A2A2A] bg-[#111111] p-8 text-center text-sm text-[#888888]">
+          <div className="rounded-2xl border border-dashed border-white/10 bg-black/40 p-8 text-center text-sm text-zinc-500">
             No P&L data for this timeframe.
           </div>
         )}
       </ChartContainer>
 
       {pnl?.breakdown?.length ? (
-        <div className="rounded-3xl border border-[#2A2A2A] bg-[#1A1A1A] shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
+        <div className="rounded-3xl border border-white/10 bg-zinc-950/50 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
           <div className="border-b border-white/5 px-5 py-4 sm:px-6">
-            <h3 className="text-lg font-semibold text-[#F0F0F0]">Top events</h3>
+            <h3 className="text-lg font-semibold text-zinc-50">Top events</h3>
           </div>
           <div className="divide-y divide-white/5">
             {pnl.breakdown.slice(0, 10).map((row) => (
@@ -86,14 +86,14 @@ export default function PnLsPage() {
                 className="flex items-center justify-between gap-4 px-5 py-4 sm:px-6"
               >
                 <div>
-                  <p className="font-medium text-[#F0F0F0]">{row.eventTitle}</p>
-                  <p className="mt-1 text-xs text-[#888888]">{row.currency}</p>
+                  <p className="font-medium text-zinc-50">{row.eventTitle}</p>
+                  <p className="mt-1 text-xs text-zinc-500">{row.currency}</p>
                 </div>
                 <span
                   className={
                     row.realizedPnl >= 0
-                      ? "tabular-nums text-[#4ADE80]"
-                      : "tabular-nums text-[#F87171]"
+                      ? "tabular-nums text-emerald-400"
+                      : "tabular-nums text-red-400"
                   }
                 >
                   {formatCurrency(row.realizedPnl)}

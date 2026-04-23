@@ -29,7 +29,7 @@ export default function PositionsPage() {
       </section>
 
       {error ? (
-        <div className="rounded-3xl border border-[#2A2A2A] bg-[#1A1A1A] p-6 text-sm text-[#F87171]">
+        <div className="rounded-3xl border border-white/10 bg-zinc-950/50 p-6 text-sm text-red-400">
           {error}
         </div>
       ) : null}
@@ -45,7 +45,7 @@ export default function PositionsPage() {
               <div className="h-12 rounded-2xl bg-white/6" />
             </div>
           ) : !portfolio?.length ? (
-            <div className="p-8 text-center text-sm text-[#888888]">
+            <div className="p-8 text-center text-sm text-zinc-500">
               No open positions.
             </div>
           ) : undefined
@@ -54,7 +54,7 @@ export default function PositionsPage() {
         {portfolio && portfolio.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="min-w-full text-left text-sm">
-              <thead className="border-b border-white/5 text-xs uppercase tracking-[0.22em] text-[#888888]">
+              <thead className="border-b border-white/5 text-xs uppercase tracking-[0.22em] text-zinc-500">
                 <tr>
                   <th className="px-5 py-4 font-medium sm:px-6">Market</th>
                   <th className="px-5 py-4 font-medium sm:px-6">Side</th>
@@ -73,32 +73,32 @@ export default function PositionsPage() {
                 {portfolio.map((position) => (
                   <tr
                     key={position.id}
-                    className="bg-[#1A1A1A] transition hover:bg-white/[0.025]"
+                    className="bg-zinc-950/50 transition hover:bg-white/[0.025]"
                   >
                     <td className="px-5 py-4 sm:px-6">
                       <div className="min-w-0">
-                        <p className="truncate font-medium text-[#F0F0F0]">
+                        <p className="truncate font-medium text-zinc-50">
                           {position.assetName}
                         </p>
-                        <p className="mt-1 text-xs text-[#888888]">
+                        <p className="mt-1 text-xs text-zinc-500">
                           {position.symbol}
                         </p>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-[#888888] sm:px-6">
+                    <td className="px-5 py-4 text-zinc-500 sm:px-6">
                       {position.symbol.includes("·")
                         ? position.symbol.split("·").pop()?.trim()
                         : "—"}
                     </td>
-                    <td className="px-5 py-4 text-right tabular-nums text-[#F0F0F0] sm:px-6">
+                    <td className="px-5 py-4 text-right tabular-nums text-zinc-50 sm:px-6">
                       {position.quantity.toLocaleString("en-US", {
                         maximumFractionDigits: 4,
                       })}
                     </td>
-                    <td className="px-5 py-4 text-right tabular-nums text-[#F0F0F0] sm:px-6">
+                    <td className="px-5 py-4 text-right tabular-nums text-zinc-50 sm:px-6">
                       {formatCurrency(position.totalValue)}
                     </td>
-                    <td className="px-5 py-4 text-right text-[#888888] sm:px-6">
+                    <td className="px-5 py-4 text-right text-zinc-500 sm:px-6">
                       {formatDate(position.lastUpdated)}
                     </td>
                   </tr>
