@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, {
   createContext,
@@ -7,17 +7,17 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from 'react';
+} from "react";
 import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
   signOut,
   type User,
-} from 'firebase/auth';
-import { getFirebaseAuth } from '@/lib/firebase/client';
-import { syncUserToFirestore } from '@/lib/firebase/sync-user';
-import { isFirebaseWebConfigured } from '@/constants/config';
+} from "firebase/auth";
+import { getFirebaseAuth } from "@/lib/firebase/client";
+import { syncUserToFirestore } from "@/lib/firebase/sync-user";
+import { isFirebaseWebConfigured } from "@/constants/config";
 
 export type AuthContextValue = {
   user: User | null;
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [configError] = useState<string | null>(
     isConfigured
       ? null
-      : 'Set NEXT_PUBLIC_FIREBASE_API_KEY, NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN, and NEXT_PUBLIC_FIREBASE_PROJECT_ID.'
+      : "Set NEXT_PUBLIC_FIREBASE_API_KEY, NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN, and NEXT_PUBLIC_FIREBASE_PROJECT_ID.",
   );
 
   useEffect(() => {
@@ -46,12 +46,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const unsub = onAuthStateChanged(auth, async (u) => {
+    const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u);
-      if (u) {
-        await syncUserToFirestore(u);
-      }
       setLoading(false);
+      if (u) {
+        void syncUserToFirestore(u);
+      }
     });
 
     return () => unsub();
@@ -60,10 +60,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = useCallback(async () => {
     const auth = getFirebaseAuth();
     if (!auth) {
-      throw new Error('Firebase Auth is not initialized.');
+      throw new Error("Firebase Auth is not initialized.");
     }
     const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
+    provider.setCustomParameters({ prompt: "select_account" });
     await signInWithPopup(auth, provider);
   }, []);
 
@@ -87,18 +87,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signOutUser,
       getIdToken,
     }),
-    [user, loading, configError, signInWithGoogle, signOutUser, getIdToken]
+    [user, loading, configError, signInWithGoogle, signOutUser, getIdToken],
   );
 
-  return (
-    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext);
   if (!ctx) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return ctx;
 }
