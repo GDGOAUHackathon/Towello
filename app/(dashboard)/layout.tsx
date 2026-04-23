@@ -1,6 +1,6 @@
-import React from 'react';
-import { DashboardAuthGate } from '@/components/auth/DashboardAuthGate';
-import { Navbar } from '@/components/shared/Navbar';
+import React from "react";
+import { DashboardAuthGate } from "@/components/auth/DashboardAuthGate";
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
 
 export default function DashboardLayout({
   children,
@@ -9,8 +9,7 @@ export default function DashboardLayout({
 }) {
   return (
     <DashboardAuthGate>
-      <Navbar />
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">{children}</main>
+      <DashboardShell>{children}</DashboardShell>
     </DashboardAuthGate>
   );
 }
