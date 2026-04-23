@@ -31,7 +31,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const title = useMemo(() => resolveTitle(pathname), [pathname]);
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(240,192,64,0.08),_transparent_30%),linear-gradient(180deg,#0A0A0A_0%,#090909_100%)] text-[#F0F0F0]">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.06),_transparent_30%),linear-gradient(180deg,#030712_0%,#0a0a0a_100%)] text-zinc-50">
       <DashboardSidebar
         collapsed={collapsed}
         onToggle={() => setCollapsed((value) => !value)}

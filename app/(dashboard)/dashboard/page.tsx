@@ -32,7 +32,7 @@ const TABS = [
 
 function LoadingPanel() {
   return (
-    <div className="space-y-3 rounded-3xl border border-[#2A2A2A] bg-[#1A1A1A] p-5">
+    <div className="space-y-3 rounded-3xl border border-white/10 bg-zinc-950/50 p-5">
       <div className="h-4 w-28 rounded-full bg-white/6" />
       <div className="h-24 rounded-2xl bg-white/6" />
       <div className="grid gap-3 sm:grid-cols-2">
@@ -53,9 +53,9 @@ function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="rounded-3xl border border-dashed border-[#2A2A2A] bg-[#111111] p-8 text-center">
-      <p className="text-base font-medium text-[#F0F0F0]">{title}</p>
-      <p className="mt-2 text-sm text-[#888888]">{description}</p>
+    <div className="rounded-3xl border border-dashed border-white/10 bg-black/40 p-8 text-center">
+      <p className="text-base font-medium text-zinc-50">{title}</p>
+      <p className="mt-2 text-sm text-zinc-500">{description}</p>
       {action ? <div className="mt-5 flex justify-center">{action}</div> : null}
     </div>
   );
@@ -79,8 +79,8 @@ function CardButton({
       onClick={onClick}
       className={`${base} ${
         variant === "primary"
-          ? "border border-[#F0C040]/25 bg-[linear-gradient(180deg,rgba(240,192,64,0.18),rgba(240,192,64,0.06))] text-[#F0F0F0] hover:border-[#F0C040]/45 hover:text-[#F0C040]"
-          : "border border-[#2A2A2A] bg-[#111111] text-[#F0F0F0] hover:border-[#F0C040]/30 hover:text-[#F0C040]"
+          ? "border border-emerald-500/25 bg-emerald-500/10 text-zinc-50 hover:border-emerald-500/45 hover:text-emerald-400"
+          : "border border-white/10 bg-black/40 text-zinc-50 hover:border-emerald-500/30 hover:text-emerald-400"
       }`}
     >
       {children}
@@ -127,7 +127,7 @@ export default function DashboardPage() {
         ? "Loading live portfolio data"
         : `Updated ${formatDate(new Date())}`,
       icon: Wallet,
-      tone: "gold" as const,
+      tone: "accent" as const,
     },
     {
       label: "Daily change",
@@ -175,7 +175,7 @@ export default function DashboardPage() {
   ) : (
     <div className="overflow-x-auto">
       <table className="min-w-full text-left text-sm">
-        <thead className="border-b border-white/5 text-xs uppercase tracking-[0.22em] text-[#888888]">
+        <thead className="border-b border-white/5 text-xs uppercase tracking-[0.22em] text-zinc-500">
           <tr>
             <th className="px-5 py-4 font-medium sm:px-6">Market</th>
             <th className="px-5 py-4 font-medium sm:px-6">Side</th>
@@ -190,32 +190,32 @@ export default function DashboardPage() {
           {portfolio.map((position) => (
             <tr
               key={position.id}
-              className="bg-[#1A1A1A] transition hover:bg-white/[0.025]"
+              className="bg-zinc-950/50 transition hover:bg-white/[0.025]"
             >
               <td className="px-5 py-4 sm:px-6">
                 <div className="min-w-0">
-                  <p className="truncate font-medium text-[#F0F0F0]">
+                  <p className="truncate font-medium text-zinc-50">
                     {position.assetName}
                   </p>
-                  <p className="mt-1 text-xs text-[#888888]">
+                  <p className="mt-1 text-xs text-zinc-500">
                     {position.symbol}
                   </p>
                 </div>
               </td>
-              <td className="px-5 py-4 text-[#888888] sm:px-6">
+              <td className="px-5 py-4 text-zinc-500 sm:px-6">
                 {position.symbol.includes("·")
                   ? position.symbol.split("·").pop()?.trim()
                   : "—"}
               </td>
-              <td className="px-5 py-4 text-right tabular-nums text-[#F0F0F0] sm:px-6">
+              <td className="px-5 py-4 text-right tabular-nums text-zinc-50 sm:px-6">
                 {position.quantity.toLocaleString("en-US", {
                   maximumFractionDigits: 4,
                 })}
               </td>
-              <td className="px-5 py-4 text-right tabular-nums text-[#F0F0F0] sm:px-6">
+              <td className="px-5 py-4 text-right tabular-nums text-zinc-50 sm:px-6">
                 {formatCurrency(position.totalValue)}
               </td>
-              <td className="px-5 py-4 text-right text-[#888888] sm:px-6">
+              <td className="px-5 py-4 text-right text-zinc-500 sm:px-6">
                 {formatDate(position.lastUpdated)}
               </td>
             </tr>
@@ -239,21 +239,21 @@ export default function DashboardPage() {
       </ChartContainer>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-3xl border border-[#2A2A2A] bg-[#1A1A1A] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
-          <p className="text-xs uppercase tracking-[0.28em] text-[#888888]">
+        <div className="rounded-3xl border border-white/10 bg-zinc-950/50 p-5 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
+          <p className="text-xs uppercase tracking-[0.28em] text-zinc-500">
             Settlement P&L
           </p>
-          <p className="mt-3 text-2xl font-semibold tabular-nums text-[#F0F0F0]">
+          <p className="mt-3 text-2xl font-semibold tabular-nums text-zinc-50">
             {pnl.settlementPnl !== undefined
               ? formatCurrency(pnl.settlementPnl)
               : "—"}
           </p>
         </div>
-        <div className="rounded-3xl border border-[#2A2A2A] bg-[#1A1A1A] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
-          <p className="text-xs uppercase tracking-[0.28em] text-[#888888]">
+        <div className="rounded-3xl border border-white/10 bg-zinc-950/50 p-5 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
+          <p className="text-xs uppercase tracking-[0.28em] text-zinc-500">
             Trade P&L
           </p>
-          <p className="mt-3 text-2xl font-semibold tabular-nums text-[#F0F0F0]">
+          <p className="mt-3 text-2xl font-semibold tabular-nums text-zinc-50">
             {pnl.tradePnl !== undefined ? formatCurrency(pnl.tradePnl) : "—"}
           </p>
         </div>
@@ -271,14 +271,14 @@ export default function DashboardPage() {
                 className="flex items-center justify-between gap-4 px-5 py-4 sm:px-6"
               >
                 <div>
-                  <p className="font-medium text-[#F0F0F0]">{row.eventTitle}</p>
-                  <p className="mt-1 text-xs text-[#888888]">
+                  <p className="font-medium text-zinc-50">{row.eventTitle}</p>
+                  <p className="mt-1 text-xs text-zinc-500">
                     {formatDate(row.lastActivity)}
                   </p>
                 </div>
                 <span
                   className={`shrink-0 tabular-nums ${
-                    row.realizedPnl >= 0 ? "text-[#4ADE80]" : "text-[#F87171]"
+                    row.realizedPnl >= 0 ? "text-emerald-400" : "text-red-400"
                   }`}
                 >
                   {formatCurrency(row.realizedPnl)}
@@ -302,48 +302,48 @@ export default function DashboardPage() {
     <EmptyState title="Analysis unavailable" description={analysisError} />
   ) : analysis ? (
     <div className="space-y-4">
-      <div className="rounded-3xl border border-[#2A2A2A] bg-[#1A1A1A] p-6 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
+      <div className="rounded-3xl border border-white/10 bg-zinc-950/50 p-6 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
         <div className="flex flex-wrap items-center gap-3">
           <span
             className={`rounded-full border px-3 py-1 text-xs font-medium ${
               analysis.riskLevel === "LOW"
-                ? "border-[#4ADE80]/20 bg-[rgba(74,222,128,0.08)] text-[#4ADE80]"
+                ? "border-emerald-500/20 bg-emerald-500/8 text-emerald-400"
                 : analysis.riskLevel === "HIGH"
-                  ? "border-[#F87171]/20 bg-[rgba(248,113,113,0.08)] text-[#F87171]"
-                  : "border-[#F0C040]/20 bg-[rgba(240,192,64,0.08)] text-[#F0C040]"
+                  ? "border-red-500/20 bg-red-500/8 text-red-400"
+                  : "border-yellow-500/20 bg-yellow-500/8 text-yellow-400"
             }`}
           >
             Risk: {analysis.riskLevel}
           </span>
-          <span className="text-sm text-[#888888]">
+          <span className="text-sm text-zinc-500">
             Confidence {(analysis.confidenceScore * 100).toFixed(0)}%
           </span>
-          <span className="text-sm text-[#888888]">
+          <span className="text-sm text-zinc-500">
             {formatDate(analysis.generatedAt)}
           </span>
         </div>
 
         <div className="mt-6 space-y-5">
           <div>
-            <h3 className="text-sm uppercase tracking-[0.28em] text-[#888888]">
+            <h3 className="text-sm uppercase tracking-[0.28em] text-zinc-500">
               Summary
             </h3>
-            <p className="mt-3 whitespace-pre-wrap text-[#F0F0F0]">
+            <p className="mt-3 whitespace-pre-wrap text-zinc-50">
               {analysis.summary}
             </p>
           </div>
 
           <div>
-            <h3 className="text-sm uppercase tracking-[0.28em] text-[#888888]">
+            <h3 className="text-sm uppercase tracking-[0.28em] text-zinc-500">
               Insights
             </h3>
-            <ul className="mt-3 space-y-2 text-[#F0F0F0]">
+            <ul className="mt-3 space-y-2 text-zinc-50">
               {analysis.insights.map((line, index) => (
                 <li
                   key={`${line}-${index}`}
-                  className="flex gap-3 rounded-2xl border border-white/5 bg-[#111111] px-4 py-3"
+                  className="flex gap-3 rounded-2xl border border-white/5 bg-black/40 px-4 py-3"
                 >
-                  <span className="mt-1 h-2 w-2 rounded-full bg-[#F0C040]" />
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-400" />
                   <span>{line}</span>
                 </li>
               ))}
@@ -352,10 +352,10 @@ export default function DashboardPage() {
 
           {analysis.marketOutlook ? (
             <div>
-              <h3 className="text-sm uppercase tracking-[0.28em] text-[#888888]">
+              <h3 className="text-sm uppercase tracking-[0.28em] text-zinc-500">
                 Outlook
               </h3>
-              <p className="mt-3 text-[#F0F0F0]">{analysis.marketOutlook}</p>
+              <p className="mt-3 text-zinc-50">{analysis.marketOutlook}</p>
             </div>
           ) : null}
         </div>
@@ -394,7 +394,7 @@ export default function DashboardPage() {
               activeTab={activeTab}
               onChange={(tabId) => setActiveTab(tabId as DashboardTab)}
             />
-            <span className="text-sm text-[#888888]">
+            <span className="text-sm text-zinc-500">
               Live edge: {insightLabel}
             </span>
           </div>
@@ -416,10 +416,10 @@ export default function DashboardPage() {
             <div className="space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <h2 className="text-xl font-semibold text-[#F0F0F0]">
+                  <h2 className="text-xl font-semibold text-zinc-50">
                     AI Analysis
                   </h2>
-                  <p className="mt-1 text-sm text-[#888888]">
+                  <p className="mt-1 text-sm text-zinc-500">
                     Uses Google Gemini to summarize the current portfolio in
                     plain English.
                   </p>
@@ -434,43 +434,43 @@ export default function DashboardPage() {
         </div>
 
         <aside className="space-y-6">
-          <div className="rounded-3xl border border-[#2A2A2A] bg-[#1A1A1A] p-6 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
+          <div className="rounded-3xl border border-white/10 bg-zinc-950/50 p-6 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.28em] text-[#888888]">
+                <p className="text-xs uppercase tracking-[0.28em] text-zinc-500">
                   Wallet balance
                 </p>
-                <p className="mt-3 text-3xl font-semibold tabular-nums text-[#F0F0F0]">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-zinc-50">
                   {portfolioLoading ? "—" : formatCurrency(totalValue)}
                 </p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#F0C040]/20 bg-[linear-gradient(180deg,rgba(240,192,64,0.18),rgba(240,192,64,0.05))] text-[#F0C040]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
                 <Wallet className="h-5 w-5" />
               </div>
             </div>
 
             <div className="mt-5 space-y-3">
-              <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-[#111111] px-4 py-3 text-sm">
-                <span className="text-[#888888]">Positions tracked</span>
-                <span className="font-medium text-[#F0F0F0]">
+              <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-black/40 px-4 py-3 text-sm">
+                <span className="text-zinc-500">Positions tracked</span>
+                <span className="font-medium text-zinc-50">
                   {positionsCount}
                 </span>
               </div>
-              <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-[#111111] px-4 py-3 text-sm">
-                <span className="text-[#888888]">Daily change</span>
+              <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-black/40 px-4 py-3 text-sm">
+                <span className="text-zinc-500">Daily change</span>
                 <span
                   className={
                     dailyChange >= 0
-                      ? "font-medium text-[#4ADE80]"
-                      : "font-medium text-[#F87171]"
+                      ? "font-medium text-emerald-400"
+                      : "font-medium text-red-400"
                   }
                 >
                   {formatCurrency(dailyChange)}
                 </span>
               </div>
-              <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-[#111111] px-4 py-3 text-sm">
-                <span className="text-[#888888]">Analysis confidence</span>
-                <span className="font-medium text-[#F0F0F0]">
+              <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-black/40 px-4 py-3 text-sm">
+                <span className="text-zinc-500">Analysis confidence</span>
+                <span className="font-medium text-zinc-50">
                   {analysis
                     ? `${(analysis.confidenceScore * 100).toFixed(0)}%`
                     : "Pending"}
@@ -479,22 +479,22 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-[#2A2A2A] bg-[#1A1A1A] p-6 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
-            <p className="text-xs uppercase tracking-[0.28em] text-[#888888]">
+          <div className="rounded-3xl border border-white/10 bg-zinc-950/50 p-6 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
+            <p className="text-xs uppercase tracking-[0.28em] text-zinc-500">
               Insight feed
             </p>
             <div className="mt-4 space-y-3">
-              <div className="rounded-2xl border border-white/5 bg-[#111111] p-4">
-                <p className="text-sm font-medium text-[#F0F0F0]">
+              <div className="rounded-2xl border border-white/5 bg-black/40 p-4">
+                <p className="text-sm font-medium text-zinc-50">
                   Latest signal
                 </p>
-                <p className="mt-2 text-sm text-[#888888]">{insightLabel}</p>
+                <p className="mt-2 text-sm text-zinc-500">{insightLabel}</p>
               </div>
-              <div className="rounded-2xl border border-white/5 bg-[#111111] p-4">
-                <p className="text-sm font-medium text-[#F0F0F0]">
+              <div className="rounded-2xl border border-white/5 bg-black/40 p-4">
+                <p className="text-sm font-medium text-zinc-50">
                   Quick status
                 </p>
-                <p className="mt-2 text-sm text-[#888888]">
+                <p className="mt-2 text-sm text-zinc-500">
                   {pnl?.breakdown?.length
                     ? `${pnl.breakdown.length} realized events tracked in the current window.`
                     : "No realized event breakdown available yet."}

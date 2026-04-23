@@ -12,11 +12,11 @@ export function ChartContainer({
   children,
 }: ChartContainerProps) {
   return (
-    <section className="rounded-3xl border border-[#2A2A2A] bg-[#1A1A1A] shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
+    <section className="rounded-3xl border border-white/10 bg-zinc-950/50 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
       <div className="border-b border-white/5 px-5 py-4 sm:px-6">
-        <h3 className="text-lg font-semibold text-[#F0F0F0]">{title}</h3>
+        <h3 className="text-lg font-semibold text-zinc-50">{title}</h3>
         {subtitle ? (
-          <p className="mt-1 text-sm text-[#888888]">{subtitle}</p>
+          <p className="mt-1 text-sm text-zinc-500">{subtitle}</p>
         ) : null}
       </div>
       <div className="p-5 sm:p-6">{children}</div>
