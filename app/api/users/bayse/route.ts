@@ -123,7 +123,7 @@ export async function POST(request: Request) {
             "Failed to create API key in Bayse. Please try again.",
         },
         {
-          status: 500,
+          status: 400,
         },
       );
     }

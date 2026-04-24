@@ -6,7 +6,7 @@ export interface BayseRequest {
 
 export interface BayseLoginResponse {
   token: string;
-  userId: string;
+  userId?: string;
   deviceId: string;
   message?: string;
   status?: number;
