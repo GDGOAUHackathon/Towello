@@ -8,10 +8,18 @@ export async function proxy(request: NextRequest) {
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const user = await getAdminAuth().verifyIdToken(token);
+  const user = await getAdminAuth()
+    .verifyIdToken(token)
+    .catch((err) => {
+      console.error("Error verifying token:", err);
+      return null;
+    });
 
   if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Unauthorized Access or Invalid Token" },
+      { status: 401 },
+    );
   }
   const requestHeaders = new Headers(request?.headers);
   requestHeaders.set("X-User-Id", user?.uid);

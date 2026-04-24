@@ -20,7 +20,7 @@ export async function GET(req: Request) {
       email: user.email,
       displayName: user.name,
     };
-    return NextResponse.json({ message: "Hello, World!", user: userData });
+    return NextResponse.json({ user: userData });
   } catch (error) {
     console.error("Error fetching user data:", error);
     return NextResponse.json(
