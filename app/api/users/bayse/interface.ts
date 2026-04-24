@@ -10,6 +10,7 @@ export interface BayseLoginResponse {
   deviceId: string;
   message?: string;
   status?: number;
+  retryAfter?: number;
 }
 
 export interface BayseSaveResponse {

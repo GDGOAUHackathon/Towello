@@ -97,6 +97,7 @@ export async function POST(request: Request) {
           error:
             loginResponse?.message ||
             "Failed to log in to Bayse. Please check your credentials.",
+          retryAfter: loginResponse?.retryAfter,
         },
         {
           status: 401,
@@ -208,6 +209,7 @@ export async function DELETE(request: Request) {
           error:
             loginResponse?.message ||
             "Failed to log in to Bayse. Please check your credentials.",
+          retryAfter: loginResponse?.retryAfter,
         },
         {
           status: 401,
@@ -228,14 +230,14 @@ export async function DELETE(request: Request) {
       },
     );
     const deleteApiKeyResponse = await deleteApiKeyRequest.json();
-    console.log(deleteApiKeyResponse);
     if (!deleteApiKeyRequest.ok) {
       console.error("Error deleting API key in Bayse:", deleteApiKeyResponse);
       return NextResponse.json(
         {
           error:
-            deleteApiKeyResponse?.message ||
+            `${deleteApiKeyResponse?.message}` ||
             "Failed to delete API key in Bayse. Please try again.",
+          retryAfter: deleteApiKeyResponse?.retryAfter,
         },
         {
           status: 400,
