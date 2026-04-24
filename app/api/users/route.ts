@@ -15,10 +15,12 @@ export async function GET(req: Request) {
 
   try {
     const user = await getAdminAuth().verifyIdToken(cookieStore);
+    console.log(user);
     const userData = {
       uid: user.uid,
       email: user.email,
       displayName: user.name,
+      image: user?.picture,
     };
     return NextResponse.json({ user: userData });
   } catch (error) {
