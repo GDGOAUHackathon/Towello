@@ -108,7 +108,7 @@ export async function POST(request: Request) {
     const { token, deviceId } = loginResponse;
 
     const createApiKeyRequest = await fetch(
-      "https://relay.bayse.markets/v1/user/me/api-keys",
+      `${bayseApiBase()}/v1/user/me/api-keys`,
       {
         method: "POST",
         headers: {
@@ -188,6 +188,37 @@ export async function DELETE(request: Request) {
     );
   }
   const { bayseEmail, baysePassword } = await request.json();
+  if (!bayseEmail.trim() || !baysePassword.trim()) {
+    return NextResponse.json(
+      {
+        error: "All fields are required.",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bayseEmail.trim())) {
+    return NextResponse.json(
+      {
+        error: "Invalid email format",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  if (baysePassword.length < 6) {
+    return NextResponse.json(
+      {
+        error: "Password must be at least 6 characters long",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
   // login to the user bayse account and delete token
   try {
     const loginRequest = await fetch(`${bayseApiBase()}/v1/user/login`, {
