@@ -48,3 +48,8 @@ firestore*
 /src
 /dataconnect
 apphosting*
+
+.firebase*
+database.rules*
+.agents
+.junie*
