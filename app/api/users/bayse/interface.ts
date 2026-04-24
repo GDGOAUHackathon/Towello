@@ -11,3 +11,11 @@ export interface BayseLoginResponse {
   message?: string;
   status?: number;
 }
+
+export interface BayseSaveResponse {
+  publicKey: string;
+  secretKey: string;
+  deviceId: string;
+  name: string;
+  createdAt: string;
+}

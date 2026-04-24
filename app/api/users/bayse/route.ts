@@ -1,6 +1,7 @@
 import { getAdminDb } from "@/lib/firebase/admin";
 import { NextResponse } from "next/server";
 import { BayseRequest, BayseLoginResponse } from "./interface";
+import { bayseApiBase } from "@/lib/config/server";
 
 export async function POST(request: Request) {
   const db = getAdminDb();
@@ -67,19 +68,16 @@ export async function POST(request: Request) {
 
   try {
     //  login in to the user account and save the credentials to the database
-    const loginRequest = await fetch(
-      `https://relay.bayse.markets/v1/user/login`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: bayseEmail,
-          password: baysePassword,
-        }),
+    const loginRequest = await fetch(`${bayseApiBase()}/v1/user/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        email: bayseEmail,
+        password: baysePassword,
+      }),
+    });
 
     const loginResponse: BayseLoginResponse = await loginRequest.json();
     if (!loginRequest.ok) {
@@ -134,6 +132,7 @@ export async function POST(request: Request) {
       createdAt: createApiKeyResponse.createdAt,
       name: apiName,
       deviceId: deviceId,
+      id: createApiKeyResponse.id,
     });
     return NextResponse.json({ message: "Bayse linked successfully!" });
   } catch (err) {
@@ -141,6 +140,108 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: "Failed to save credentials. Please try again later.",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  const db = getAdminDb();
+  const authHeader = request.headers.get("authorization");
+  const userId = request.headers.get("X-User-Id");
+  if (!authHeader || !userId) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+  const userBayseRef = await db
+    .collection("bayseCredentials")
+    .doc(userId)
+    .get();
+  if (!userBayseRef.exists) {
+    return NextResponse.json(
+      {
+        error: "No Bayse credentials found for this user.",
+      },
+      {
+        status: 404,
+      },
+    );
+  }
+  const { bayseEmail, baysePassword } = await request.json();
+  // login to the user bayse account and delete token
+  try {
+    const loginRequest = await fetch(`${bayseApiBase()}/v1/user/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: bayseEmail,
+        password: baysePassword,
+      }),
+    });
+    const loginResponse: BayseLoginResponse = await loginRequest.json();
+    console.log(loginResponse);
+    if (!loginRequest.ok) {
+      console.error("Error logging in to Bayse:", loginResponse);
+      return NextResponse.json(
+        {
+          error:
+            loginResponse?.message ||
+            "Failed to log in to Bayse. Please check your credentials.",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+    const { token, deviceId } = loginResponse;
+
+    const deleteApiKeyRequest = await fetch(
+      `${bayseApiBase()}/v1/user/me/api-keys/${userBayseRef.data()?.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "x-auth-token": token,
+          "x-device-id": deviceId,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    const deleteApiKeyResponse = await deleteApiKeyRequest.json();
+    console.log(deleteApiKeyResponse);
+    if (!deleteApiKeyRequest.ok) {
+      console.error("Error deleting API key in Bayse:", deleteApiKeyResponse);
+      return NextResponse.json(
+        {
+          error:
+            deleteApiKeyResponse?.message ||
+            "Failed to delete API key in Bayse. Please try again.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    await db.collection("bayseCredentials").doc(userId).delete();
+    return NextResponse.json({
+      message: "Bayse deleted successfully!",
+    });
+  } catch (err) {
+    console.error("Error deleting Bayse credentials:", err);
+    return NextResponse.json(
+      {
+        error: "Failed to delete credentials. Please try again later.",
       },
       {
         status: 500,
