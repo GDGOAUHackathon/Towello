@@ -1,6 +1,6 @@
 import admin from "firebase-admin";
 
-export function getAdminAuth(): admin.auth.Auth {
+function ensureAdminApp(): admin.app.App {
   const isDevelopment = process.env.NODE_ENV === "development";
 
   if (isDevelopment) {
@@ -40,5 +40,15 @@ export function getAdminAuth(): admin.auth.Auth {
     }
   }
 
-  return admin.auth();
+  return admin.app();
+}
+
+export function getAdminAuth(): admin.auth.Auth {
+  const app = ensureAdminApp();
+  return admin.auth(app);
+}
+
+export function getAdminDb(): admin.firestore.Firestore {
+  const app = ensureAdminApp();
+  return admin.firestore(app);
 }
