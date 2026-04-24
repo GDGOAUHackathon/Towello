@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -21,6 +21,8 @@ import {
   formatDate,
   formatPercentage,
 } from "@/lib/utils/format";
+import { auth } from "firebase-admin";
+import { getAuth } from "firebase/auth";
 
 type DashboardTab = "positions" | "pnl" | "analysis";
 
@@ -103,6 +105,14 @@ export default function DashboardPage() {
     isLoading: analysisLoading,
     runAnalysis,
   } = useAnalysis();
+
+  // useEffect(() => {
+  //   const auth = getAuth();
+  //   async function fetchData() {
+  //     console.log(await auth.currentUser.getIdToken());
+  //   }
+  //   fetchData();
+  // }, []);
 
   const totalValue = summary?.totalValue ?? 0;
   const dailyChange = summary?.dailyChange ?? 0;
