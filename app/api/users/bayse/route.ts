@@ -67,6 +67,16 @@ export async function POST(request: Request) {
   }
 
   try {
+    if ((await db.collection("bayseCredentials").doc(userId).get()).exists) {
+      return NextResponse.json(
+        {
+          error: "Bayse is already linked to this account.",
+        },
+        {
+          status: 409,
+        },
+      );
+    }
     //  login in to the user account and save the credentials to the database
     const loginRequest = await fetch(`${bayseApiBase()}/v1/user/login`, {
       method: "POST",
@@ -242,6 +252,57 @@ export async function DELETE(request: Request) {
     return NextResponse.json(
       {
         error: "Failed to delete credentials. Please try again later.",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
+}
+
+export async function GET(request: Request) {
+  const db = getAdminDb();
+  const authHeader = request.headers.get("authorization");
+  const userId = request.headers.get("X-User-Id");
+  if (!authHeader || !userId) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized Access",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+
+  try {
+    const userBayseRef = await db
+      .collection("bayseCredentials")
+      .doc(userId)
+      .get();
+    if (!userBayseRef.exists) {
+      return NextResponse.json(
+        {
+          error: "No Bayse credentials found for this user.",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+    return NextResponse.json(
+      {
+        bayse: userBayseRef.data(),
+      },
+      {
+        status: 200,
+      },
+    );
+  } catch (err) {
+    console.error("Error fetching Bayse credentials:", err);
+    return NextResponse.json(
+      {
+        error: "Failed to fetch credentials. Please try again later.",
       },
       {
         status: 500,
