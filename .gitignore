@@ -42,3 +42,9 @@ next-env.d.ts
 
 
 .npm-cache
+
+firebase*
+firestore*
+/src
+/dataconnect
+apphosting*
