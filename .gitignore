@@ -53,3 +53,6 @@ apphosting*
 database.rules*
 .agents
 .junie*
+
+dataconnect*
+pglite*

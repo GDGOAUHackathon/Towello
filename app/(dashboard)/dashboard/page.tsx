@@ -190,7 +190,7 @@ export default function DashboardPage() {
           {portfolio.map((position) => (
             <tr
               key={position.id}
-              className="bg-zinc-950/50 transition hover:bg-white/[0.025]"
+              className="bg-zinc-950/50 transition hover:bg-white/2.5"
             >
               <td className="px-5 py-4 sm:px-6">
                 <div className="min-w-0">
