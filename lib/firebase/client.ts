@@ -49,7 +49,7 @@ export function getFirebaseAuth(): Auth | null {
   if (!a) return null;
   if (!auth) {
     auth = getAuth(a);
-    if (isDevelopment && !authEmulatorConnected) {
+    if (isDevelopment && process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === "true" && !authEmulatorConnected) {
       connectAuthEmulator(auth, `http://${emulatorHost}:${authEmulatorPort}`, {
         disableWarnings: true,
       });
@@ -64,7 +64,7 @@ export function getFirebaseDb(): Firestore | null {
   if (!a) return null;
   if (!db) {
     db = getFirestore(a);
-    if (isDevelopment && !firestoreEmulatorConnected) {
+    if (isDevelopment && process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === "true" && !firestoreEmulatorConnected) {
       connectFirestoreEmulator(db, emulatorHost, firestoreEmulatorPort);
       firestoreEmulatorConnected = true;
     }

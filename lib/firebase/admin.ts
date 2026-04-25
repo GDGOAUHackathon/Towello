@@ -3,7 +3,7 @@ import admin from "firebase-admin";
 function ensureAdminApp(): admin.app.App {
   const isDevelopment = process.env.NODE_ENV === "development";
 
-  if (isDevelopment) {
+  if (isDevelopment && process.env.USE_FIREBASE_EMULATOR === "true") {
     process.env.FIREBASE_AUTH_EMULATOR_HOST ??= "127.0.0.1:9099";
     process.env.FIRESTORE_EMULATOR_HOST ??= "127.0.0.1:8080";
   }
