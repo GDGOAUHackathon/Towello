@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import { BrainCircuit, ChevronRight, Sparkles } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { ChartContainer } from "@/components/dashboard/ChartContainer";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { TabSwitcher } from "@/components/dashboard/TabSwitcher";
 import { useAnalysis } from "@/hooks/useAnalysis";
+import { usePortfolio } from "@/hooks/usePortfolio";
+import { usePnL } from "@/hooks/usePnL";
 import { formatDate } from "@/lib/utils/format";
 
 const TABS = [
@@ -18,9 +21,11 @@ export default function AnalyticsPage() {
     "overview",
   );
   const { analysis, isLoading, error, runAnalysis } = useAnalysis();
+  const { portfolio } = usePortfolio();
+  const { pnl } = usePnL("1M");
 
-  const headline = analysis?.summary
-    ? analysis.summary.slice(0, 160)
+  const headline = analysis
+    ? "AI analysis completed. See below for the breakdown."
     : "Generate an AI view of the portfolio to highlight risk, confidence, and market posture.";
 
   return (
@@ -38,15 +43,13 @@ export default function AnalyticsPage() {
         />
         <StatCard
           label="Confidence"
-          value={
-            analysis ? `${(analysis.confidenceScore * 100).toFixed(0)}%` : "—"
-          }
+          value={analysis ? "High" : "—"}
           meta="Model certainty from the latest run"
           icon={Sparkles}
         />
         <StatCard
           label="Generated"
-          value={analysis ? formatDate(analysis.generatedAt) : "—"}
+          value={analysis ? "Recent" : "—"}
           meta="Timestamp of the last AI summary"
           icon={ChevronRight}
           tone="neutral"
@@ -61,7 +64,7 @@ export default function AnalyticsPage() {
         />
         <button
           type="button"
-          onClick={() => void runAnalysis()}
+          onClick={() => void runAnalysis(portfolio, pnl)}
           className="inline-flex items-center gap-2 rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-2.5 text-sm font-medium text-zinc-50 transition hover:border-emerald-500/45 hover:text-emerald-400"
         >
           <Sparkles className="h-4 w-4" />
@@ -87,9 +90,9 @@ export default function AnalyticsPage() {
               <div className="h-4 w-5/6 rounded-full bg-white/6" />
             </div>
           ) : analysis ? (
-            <p className="whitespace-pre-wrap text-sm leading-7 text-zinc-50">
-              {headline}
-            </p>
+            <div className="prose prose-invert max-w-none prose-p:text-zinc-50 prose-headings:text-zinc-50 prose-li:text-zinc-50">
+              <ReactMarkdown>{analysis}</ReactMarkdown>
+            </div>
           ) : (
             <p className="text-sm text-zinc-500">
               Run analysis to populate the overview.
@@ -101,17 +104,10 @@ export default function AnalyticsPage() {
           title="Insights"
           subtitle="Actionable bullets from the latest analysis output."
         >
-          {analysis?.insights?.length ? (
-            <ul className="space-y-3">
-              {analysis.insights.map((item, index) => (
-                <li
-                  key={`${item}-${index}`}
-                  className="rounded-2xl border border-white/5 bg-black/40 px-4 py-3 text-sm text-zinc-50"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
+          {analysis ? (
+            <div className="prose prose-invert max-w-none prose-p:text-zinc-50 prose-headings:text-zinc-50 prose-li:text-zinc-50">
+              <ReactMarkdown>{analysis}</ReactMarkdown>
+            </div>
           ) : (
             <p className="text-sm text-zinc-500">
               No insights yet. Run the analyzer first.

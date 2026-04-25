@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import ReactMarkdown from "react-markdown";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -125,11 +126,10 @@ export default function DashboardPage() {
   const pnlTrendUp = realizedPnl >= 0;
 
   const insightLabel = useMemo(() => {
-    if (analysis?.insights?.length) return analysis.insights[0];
     if (pnl?.breakdown?.length)
       return pnl.breakdown[0]?.eventTitle ?? "Tracking live events";
     return "Connect your account to surface more signal.";
-  }, [analysis?.insights, pnl?.breakdown]);
+  }, [pnl?.breakdown]);
 
   const metrics = [
     {
@@ -315,61 +315,8 @@ export default function DashboardPage() {
   ) : analysis ? (
     <div className="space-y-4">
       <div className="rounded-3xl border border-white/10 bg-zinc-950/50 p-6 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
-        <div className="flex flex-wrap items-center gap-3">
-          <span
-            className={`rounded-full border px-3 py-1 text-xs font-medium ${
-              analysis.riskLevel === "LOW"
-                ? "border-emerald-500/20 bg-emerald-500/8 text-emerald-400"
-                : analysis.riskLevel === "HIGH"
-                  ? "border-red-500/20 bg-red-500/8 text-red-400"
-                  : "border-yellow-500/20 bg-yellow-500/8 text-yellow-400"
-            }`}
-          >
-            Risk: {analysis.riskLevel}
-          </span>
-          <span className="text-sm text-zinc-500">
-            Confidence {(analysis.confidenceScore * 100).toFixed(0)}%
-          </span>
-          <span className="text-sm text-zinc-500">
-            {formatDate(analysis.generatedAt)}
-          </span>
-        </div>
-
-        <div className="mt-6 space-y-5">
-          <div>
-            <h3 className="text-sm uppercase tracking-[0.28em] text-zinc-500">
-              Summary
-            </h3>
-            <p className="mt-3 whitespace-pre-wrap text-zinc-50">
-              {analysis.summary}
-            </p>
-          </div>
-
-          <div>
-            <h3 className="text-sm uppercase tracking-[0.28em] text-zinc-500">
-              Insights
-            </h3>
-            <ul className="mt-3 space-y-2 text-zinc-50">
-              {analysis.insights.map((line, index) => (
-                <li
-                  key={`${line}-${index}`}
-                  className="flex gap-3 rounded-2xl border border-white/5 bg-black/40 px-4 py-3"
-                >
-                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-400" />
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {analysis.marketOutlook ? (
-            <div>
-              <h3 className="text-sm uppercase tracking-[0.28em] text-zinc-500">
-                Outlook
-              </h3>
-              <p className="mt-3 text-zinc-50">{analysis.marketOutlook}</p>
-            </div>
-          ) : null}
+        <div className="prose prose-invert max-w-none prose-p:text-zinc-50 prose-headings:text-zinc-50 prose-li:text-zinc-50">
+          <ReactMarkdown>{analysis}</ReactMarkdown>
         </div>
       </div>
     </div>
@@ -378,7 +325,7 @@ export default function DashboardPage() {
       title="Run AI analysis"
       description="Generate a premium portfolio summary with Gemini when you need a quick risk read."
       action={
-        <CardButton onClick={() => void runAnalysis()}>Run analysis</CardButton>
+        <CardButton onClick={() => void runAnalysis(portfolio, pnl)}>Run analysis</CardButton>
       }
     />
   );
@@ -436,7 +383,7 @@ export default function DashboardPage() {
                     plain English.
                   </p>
                 </div>
-                <CardButton onClick={() => void runAnalysis()}>
+                <CardButton onClick={() => void runAnalysis(portfolio, pnl)}>
                   Run analysis
                 </CardButton>
               </div>
@@ -481,11 +428,9 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-black/40 px-4 py-3 text-sm">
-                <span className="text-zinc-500">Analysis confidence</span>
+                <span className="text-zinc-500">Analysis status</span>
                 <span className="font-medium text-zinc-50">
-                  {analysis
-                    ? `${(analysis.confidenceScore * 100).toFixed(0)}%`
-                    : "Pending"}
+                  {analysis ? "Ready" : "Pending"}
                 </span>
               </div>
             </div>
