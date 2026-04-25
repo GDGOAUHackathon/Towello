@@ -9,24 +9,18 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    let analysisType = 'general';
-    try {
-      const body = await req.json();
-      analysisType = body.analysisType || 'general';
-    } catch {
-      // Body might be empty, fallback to general
+    const { position } = await req.json();
+    if (!position) {
+      return NextResponse.json({ error: 'Missing position data' }, { status: 400 });
     }
 
-    const result = await analysisService.generatePortfolioReport(
-      auth.uid, 
-      analysisType === 'category' ? 'category' : 'general'
-    );
+    const analysis = await analysisService.analyzePosition(auth.uid, position);
 
-    return NextResponse.json(result);
+    return NextResponse.json(analysis);
   } catch (error: any) {
-    console.error('Analysis error:', error);
+    console.error('Should-I-Sell error:', error);
     return NextResponse.json({ 
-      error: error.message || 'Failed to generate analysis' 
+      error: error.message || 'Failed to analyze position' 
     }, { status: 500 });
   }
 }

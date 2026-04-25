@@ -4,6 +4,13 @@ import { getAdminAuth } from "./lib/firebase/admin";
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  
+  // Only proxy /api routes
+  if (!pathname.startsWith('/api/')) {
+    return NextResponse.next();
+  }
+
   const token = request.headers.get("authorization")?.split("Bearer ")[1] || "";
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -30,7 +37,3 @@ export async function proxy(request: NextRequest) {
     },
   });
 }
-
-export const config = {
-  matcher: "/api/:path*",
-};

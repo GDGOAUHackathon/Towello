@@ -9,27 +9,13 @@ function ensureAdminApp(): admin.app.App {
   }
 
   if (!admin.apps.length) {
-    if (isDevelopment) {
-      const projectId =
-        process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ??
-        process.env.GCLOUD_PROJECT ??
-        "demo-towello";
+    const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+    const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
+    const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
-      admin.initializeApp({ projectId });
-    } else {
-      const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-      const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
-      const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(
-        /\\n/g,
-        "\n",
-      );
-
-      if (!projectId || !clientEmail || !privateKey) {
-        throw new Error(
-          "Firebase Admin credentials are missing (NEXT_PUBLIC_FIREBASE_PROJECT_ID, FIREBASE_ADMIN_CLIENT_EMAIL, FIREBASE_ADMIN_PRIVATE_KEY).",
-        );
-      }
-
+    if (isDevelopment && process.env.USE_FIREBASE_EMULATOR === "true") {
+      admin.initializeApp({ projectId: projectId || "demo-towello" });
+    } else if (projectId && clientEmail && privateKey) {
       admin.initializeApp({
         credential: admin.credential.cert({
           projectId,
@@ -37,6 +23,13 @@ function ensureAdminApp(): admin.app.App {
           privateKey,
         }),
       });
+    } else if (isDevelopment) {
+      // Fallback for dev if no credentials but no emulator (will likely fail on live calls, but prevents crash on boot)
+      admin.initializeApp({ projectId: projectId || "demo-towello" });
+    } else {
+      throw new Error(
+        "Firebase Admin credentials are missing (NEXT_PUBLIC_FIREBASE_PROJECT_ID, FIREBASE_ADMIN_CLIENT_EMAIL, FIREBASE_ADMIN_PRIVATE_KEY).",
+      );
     }
   }
 
