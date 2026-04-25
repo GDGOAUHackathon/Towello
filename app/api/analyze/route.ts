@@ -18,9 +18,35 @@ export async function POST(req: NextRequest) {
       // Body might be empty, fallback to general
     }
 
+    const validAnalysisType = analysisType === 'category' ? 'category' : 'general';
+
+    // CHECK CACHE: Prevent redundant AI generation and save costs
+    const cachedDocs = await adminDb
+      .collection('users')
+      .doc(auth.uid)
+      .collection('analyses')
+      .orderBy('createdAt', 'desc')
+      .limit(10)
+      .get();
+
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const recentDoc = cachedDocs.docs.find(d => {
+      const data = d.data();
+      return data.type === validAnalysisType && data.createdAt >= oneHourAgo;
+    });
+
+    if (recentDoc) {
+      const cached = recentDoc.data();
+      return NextResponse.json({
+        analysis: cached.text,
+        generatedAt: cached.createdAt,
+        cached: true
+      });
+    }
+
     const result = await analysisService.generatePortfolioReport(
       auth.uid, 
-      analysisType === 'category' ? 'category' : 'general'
+      validAnalysisType
     );
 
     // STEP 4 & 5 — FIREBASE PERSISTENCE WITH FAIL-SAFE

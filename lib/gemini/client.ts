@@ -23,6 +23,7 @@ export class GeminiClient {
         temperature,
         topP: 0.9,
         maxOutputTokens: 1024,
+        responseMimeType: "application/json",
       }
     });
   }

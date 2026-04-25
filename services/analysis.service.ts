@@ -7,8 +7,10 @@ import { BayseOutcomeBalance } from '@/lib/bayse/types';
 export class AnalysisService {
   async generatePortfolioReport(userId: string, type: 'general' | 'category' = 'general'): Promise<{ analysis: any, generatedAt: string }> {
     const bayse = getBayseClient();
-    const portfolio = await bayse.getPortfolio();
-    const pnl = await bayse.getPnL({ breakdown: true });
+    const [portfolio, pnl] = await Promise.all([
+      bayse.getPortfolio(),
+      bayse.getPnL({ breakdown: true })
+    ]);
     
     let prompt: string;
     if (type === 'category') {

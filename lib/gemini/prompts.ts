@@ -143,11 +143,21 @@ OVERALL PNL:
 - Realized PnL: ${pnl.realizedPnl}
 - Realized %: ${pnl.realizedPnlPercent}%
 
-Provide a structured markdown response covering:
-1. **Strongest Category**: Which category is performing best quantitatively?
-2. **Weakest Category**: Where is capital being lost?
-3. **Allocation Mistakes**: Are they over-allocated to low-edge categories?
-4. **Capital Reallocation**: Where should they move their money for better EV?
+REQUIRED JSON OUTPUT FORMAT:
+{
+  "riskLevel": "LOW" | "MEDIUM" | "HIGH",
+  "confidence": number (0-100),
+  "summary": "1-2 sentences summarizing the strongest and weakest categories.",
+  "insights": [
+    "Identify strongest category",
+    "Identify weakest category where capital is bleeding",
+    "Identify allocation mistakes",
+    "Suggest where to reallocate for better EV"
+  ],
+  "outlook": "1-2 sentences on expected trajectory based on category exposure."
+}
 
-Keep it concise and data-driven.`;
+CONSTRAINTS:
+- Return ONLY valid JSON. No markdown. No explanation text.
+- Keep it concise and data-driven.`;
 }
