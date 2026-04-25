@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { mutate as globalMutate } from "swr";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 type NavbarProps = {
   title: string;
@@ -37,6 +38,7 @@ export function DashboardNavbar({
   onRefreshDone,
 }: NavbarProps) {
   const { user, signOutUser } = useAuth();
+  const { currency, setCurrency } = useCurrency();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -59,7 +61,7 @@ export function DashboardNavbar({
     onRefreshDone(new Date());
   };
 
-  const timeLabel = new Intl.DateTimeFormat("en-US", {
+  const timeLabel = new Intl.DateTimeFormat(currency === 'NGN' ? "en-NG" : "en-US", {
     hour: "numeric",
     minute: "2-digit",
   }).format(updatedAt);
@@ -90,6 +92,31 @@ export function DashboardNavbar({
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
+          <div className="flex items-center gap-1 rounded-2xl border border-white/8 bg-white/4 p-1">
+            <button
+              type="button"
+              onClick={() => setCurrency("NGN")}
+              className={`rounded-xl px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-wider transition ${
+                currency === "NGN"
+                  ? "bg-emerald-500/10 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
+                  : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              NGN
+            </button>
+            <button
+              type="button"
+              onClick={() => setCurrency("USD")}
+              className={`rounded-xl px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-wider transition ${
+                currency === "USD"
+                  ? "bg-emerald-500/10 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
+                  : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              USD
+            </button>
+          </div>
+
           <div className="rounded-2xl border border-white/8 bg-white/4 px-4 py-2 text-right">
             <p className="text-[0.62rem] uppercase tracking-[0.28em] text-zinc-500">
               Last updated

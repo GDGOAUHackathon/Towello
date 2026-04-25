@@ -5,9 +5,11 @@ import { DataTable } from "@/components/dashboard/DataTable";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { usePortfolio } from "@/hooks/usePortfolio";
 import { formatCurrency, formatDate } from "@/lib/utils/format";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 export default function PositionsPage() {
   const { portfolio, summary, isLoading, error } = usePortfolio();
+  const { currency } = useCurrency();
   const totalValue = summary?.totalValue ?? 0;
 
   return (
@@ -15,7 +17,7 @@ export default function PositionsPage() {
       <section className="grid gap-4 lg:grid-cols-2">
         <StatCard
           label="Portfolio value"
-          value={isLoading ? "—" : formatCurrency(totalValue)}
+          value={isLoading ? "—" : formatCurrency(totalValue, currency)}
           meta="Live value from the connected Bayse account"
           icon={Wallet}
         />
@@ -91,12 +93,12 @@ export default function PositionsPage() {
                         : "—"}
                     </td>
                     <td className="px-5 py-4 text-right tabular-nums text-zinc-50 sm:px-6">
-                      {position.quantity.toLocaleString("en-US", {
+                      {position.quantity.toLocaleString(currency === 'NGN' ? "en-NG" : "en-US", {
                         maximumFractionDigits: 4,
                       })}
                     </td>
                     <td className="px-5 py-4 text-right tabular-nums text-zinc-50 sm:px-6">
-                      {formatCurrency(position.totalValue)}
+                      {formatCurrency(position.totalValue, currency)}
                     </td>
                     <td className="px-5 py-4 text-right text-zinc-500 sm:px-6">
                       {formatDate(position.lastUpdated)}

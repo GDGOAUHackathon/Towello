@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import { BrainCircuit, ChevronRight, Sparkles } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { ChartContainer } from "@/components/dashboard/ChartContainer";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { TabSwitcher } from "@/components/dashboard/TabSwitcher";
 import { useAnalysis } from "@/hooks/useAnalysis";
+import { usePortfolio } from "@/hooks/usePortfolio";
+import { usePnL } from "@/hooks/usePnL";
 import { formatDate } from "@/lib/utils/format";
 
 const TABS = [
@@ -17,10 +20,12 @@ export default function AnalyticsPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "insights">(
     "overview",
   );
-  const { analysis, isLoading, error, runAnalysis } = useAnalysis();
+  const { analysis, generatedAt, isLoading, error, runAnalysis } = useAnalysis();
+  const { portfolio } = usePortfolio();
+  const { pnl } = usePnL("1M");
 
-  const headline = analysis?.summary
-    ? analysis.summary.slice(0, 160)
+  const headline = analysis
+    ? "AI analysis completed. See below for the breakdown."
     : "Generate an AI view of the portfolio to highlight risk, confidence, and market posture.";
 
   return (
@@ -38,16 +43,14 @@ export default function AnalyticsPage() {
         />
         <StatCard
           label="Confidence"
-          value={
-            analysis ? `${(analysis.confidenceScore * 100).toFixed(0)}%` : "—"
-          }
+          value={analysis ? `${analysis.confidence}%` : "—"}
           meta="Model certainty from the latest run"
           icon={Sparkles}
         />
         <StatCard
           label="Generated"
-          value={analysis ? formatDate(analysis.generatedAt) : "—"}
-          meta="Timestamp of the last AI summary"
+          value={generatedAt ? new Date(generatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : "—"}
+          meta={generatedAt ? new Date(generatedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : "Timestamp of the last AI summary"}
           icon={ChevronRight}
           tone="neutral"
         />
@@ -61,7 +64,7 @@ export default function AnalyticsPage() {
         />
         <button
           type="button"
-          onClick={() => void runAnalysis()}
+          onClick={() => void runAnalysis(portfolio, pnl)}
           className="inline-flex items-center gap-2 rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-2.5 text-sm font-medium text-zinc-50 transition hover:border-emerald-500/45 hover:text-emerald-400"
         >
           <Sparkles className="h-4 w-4" />
@@ -87,9 +90,31 @@ export default function AnalyticsPage() {
               <div className="h-4 w-5/6 rounded-full bg-white/6" />
             </div>
           ) : analysis ? (
-            <p className="whitespace-pre-wrap text-sm leading-7 text-zinc-50">
-              {headline}
-            </p>
+            <div className="space-y-8 p-2">
+              <div className="mb-8 flex flex-wrap items-center gap-4 border-b border-white/5 pb-6">
+                <span className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wider ${
+                  analysis.riskLevel === 'HIGH' ? 'border-red-500/20 bg-red-500/10 text-red-400' :
+                  analysis.riskLevel === 'MEDIUM' ? 'border-amber-500/20 bg-amber-500/10 text-amber-400' :
+                  'border-emerald-500/20 bg-emerald-950/40 text-emerald-400'
+                }`}>
+                  Risk: {analysis.riskLevel}
+                </span>
+                <span className="text-[13px] font-medium text-zinc-500">Confidence {analysis.confidence}%</span>
+                {generatedAt && (
+                  <span className="text-[13px] font-medium text-zinc-500">
+                    {new Date(generatedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
+                  </span>
+                )}
+              </div>
+              <div>
+                <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-500">S U M M A R Y</h3>
+                <p className="text-[15px] font-medium leading-relaxed text-zinc-50">{analysis.summary}</p>
+              </div>
+              <div>
+                <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-500">O U T L O O K</h3>
+                <p className="text-[15px] font-medium leading-relaxed text-zinc-50">{analysis.outlook}</p>
+              </div>
+            </div>
           ) : (
             <p className="text-sm text-zinc-500">
               Run analysis to populate the overview.
@@ -101,17 +126,18 @@ export default function AnalyticsPage() {
           title="Insights"
           subtitle="Actionable bullets from the latest analysis output."
         >
-          {analysis?.insights?.length ? (
-            <ul className="space-y-3">
-              {analysis.insights.map((item, index) => (
-                <li
-                  key={`${item}-${index}`}
-                  className="rounded-2xl border border-white/5 bg-black/40 px-4 py-3 text-sm text-zinc-50"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
+          {analysis ? (
+            <div className="space-y-3 p-2">
+              <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-500">I N S I G H T S</h3>
+              <div className="space-y-3">
+                {Array.isArray(analysis.insights) ? analysis.insights.map((insight: string, i: number) => (
+                  <div key={i} className="flex items-start gap-3 rounded-[16px] border border-white/5 bg-white/[0.02] p-4 shadow-sm">
+                    <div className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+                    <p className="text-[14px] leading-relaxed text-zinc-50">{insight}</p>
+                  </div>
+                )) : null}
+              </div>
+            </div>
           ) : (
             <p className="text-sm text-zinc-500">
               No insights yet. Run the analyzer first.

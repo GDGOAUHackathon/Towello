@@ -3,10 +3,12 @@
 import React from "react";
 import type { PnLSnapshot } from "@/types/pnl";
 import { formatCurrency, formatPercentage } from "@/lib/utils/format";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 
 export const PnLChart: React.FC<{ snapshots: PnLSnapshot[] }> = ({
   snapshots,
 }) => {
+  const { currency } = useCurrency();
   if (!snapshots.length) {
     return (
       <div className="flex h-48 w-full items-center justify-center rounded-xl border border-dashed border-white/20 text-sm text-zinc-500">
@@ -23,10 +25,10 @@ export const PnLChart: React.FC<{ snapshots: PnLSnapshot[] }> = ({
         Realized PnL (period)
       </p>
       <p className="mt-2 text-3xl font-semibold tabular-nums text-zinc-50">
-        {formatCurrency(s.realizedPnL)}
+        {formatCurrency(s.realizedPnL, currency)}
       </p>
       <p className="mt-1 text-sm text-zinc-400">
-        ROI {formatPercentage(s.roi)} · total {formatCurrency(s.totalPnL)}
+        ROI {formatPercentage(s.roi)} · total {formatCurrency(s.totalPnL, currency)}
       </p>
       <p className="mt-4 text-xs text-zinc-500">
         Bayse returns period aggregates for PnL; intraday time series are not

@@ -17,7 +17,7 @@ export const CONFIG = {
   },
   GEMINI: {
     API_KEY: process.env.GEMINI_API_KEY,
-    MODEL: process.env.GEMINI_MODEL ?? 'gemini-2.0-flash',
+    MODEL: process.env.GEMINI_MODEL ?? 'gemini-2.5-flash-lite',
   },
   APP: {
     NAME: 'Towello',

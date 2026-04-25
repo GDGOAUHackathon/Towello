@@ -16,9 +16,11 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const timeframe = searchParams.get('timeframe') ?? '1M';
+  const cur = searchParams.get('currency');
+  const currency = cur === 'USD' || cur === 'NGN' ? cur : 'NGN';
 
   try {
-    const data = await pnlService.getPnLHistory(auth.uid, timeframe);
+    const data = await pnlService.getPnLHistory(auth.uid, timeframe, currency);
 
     const body: ApiResponse<PnLHistory> = {
       data,

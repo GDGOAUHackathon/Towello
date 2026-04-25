@@ -8,6 +8,7 @@ import { TabSwitcher } from "@/components/dashboard/TabSwitcher";
 import { PnLChart } from "@/components/charts/PnLChart";
 import { usePnL } from "@/hooks/usePnL";
 import { formatCurrency } from "@/lib/utils/format";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 import type { PnLTimeframe } from "@/types/pnl";
 
 const TIMEFRAMES: PnLTimeframe[] = ["1D", "1W", "1M", "1Y", "ALL"];
@@ -15,6 +16,7 @@ const TIMEFRAMES: PnLTimeframe[] = ["1D", "1W", "1M", "1Y", "ALL"];
 export default function PnLsPage() {
   const [tf, setTf] = useState<PnLTimeframe>("1M");
   const { pnl, isLoading, error } = usePnL(tf);
+  const { currency } = useCurrency();
 
   return (
     <div className="space-y-6">
@@ -23,7 +25,7 @@ export default function PnLsPage() {
           label="Settlement P&L"
           value={
             pnl?.settlementPnl !== undefined
-              ? formatCurrency(pnl.settlementPnl)
+              ? formatCurrency(pnl.settlementPnl, currency)
               : "—"
           }
           meta="Cash settled profit and loss"
@@ -33,7 +35,7 @@ export default function PnLsPage() {
         <StatCard
           label="Trade P&L"
           value={
-            pnl?.tradePnl !== undefined ? formatCurrency(pnl.tradePnl) : "—"
+            pnl?.tradePnl !== undefined ? formatCurrency(pnl.tradePnl, currency) : "—"
           }
           meta="Execution-driven realized performance"
           icon={ArrowDownRight}
@@ -96,7 +98,7 @@ export default function PnLsPage() {
                       : "tabular-nums text-red-400"
                   }
                 >
-                  {formatCurrency(row.realizedPnl)}
+                  {formatCurrency(row.realizedPnl, currency)}
                 </span>
               </div>
             ))}

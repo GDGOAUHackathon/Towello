@@ -6,6 +6,8 @@ import { useAuth } from '@/components/providers/AuthProvider';
 import { apiGet } from '@/lib/utils/fetcher';
 import type { PortfolioPosition, PortfolioSummary } from '@/types/portfolio';
 
+import { useCurrency } from '@/components/providers/CurrencyProvider';
+
 type PortfolioPayload = {
   positions: PortfolioPosition[];
   summary: PortfolioSummary;
@@ -13,12 +15,15 @@ type PortfolioPayload = {
 
 export function usePortfolio() {
   const { user, loading: authLoading, getIdToken } = useAuth();
+  const { currency } = useCurrency();
+
+  const keyPath = `${ROUTES.API.PORTFOLIO}?currency=${currency}`;
 
   const { data, error, isLoading, mutate } = useSWR(
     user && !authLoading
-      ? [ROUTES.API.PORTFOLIO, user.uid]
+      ? [keyPath, user.uid]
       : null,
-    () => apiGet<PortfolioPayload>(ROUTES.API.PORTFOLIO, getIdToken)
+    () => apiGet<PortfolioPayload>(keyPath, getIdToken)
   );
 
   return {

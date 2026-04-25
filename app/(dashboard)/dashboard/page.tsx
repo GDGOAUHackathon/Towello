@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import ReactMarkdown from "react-markdown";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -21,6 +22,7 @@ import {
   formatDate,
   formatPercentage,
 } from "@/lib/utils/format";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { auth } from "firebase-admin";
 import { getAuth } from "firebase/auth";
 
@@ -101,10 +103,12 @@ export default function DashboardPage() {
   const { pnl, isLoading: pnlLoading, error: pnlError } = usePnL("1M");
   const {
     analysis,
+    generatedAt,
     error: analysisError,
     isLoading: analysisLoading,
     runAnalysis,
   } = useAnalysis();
+  const { currency } = useCurrency();
 
   // useEffect(() => {
   //   const auth = getAuth();
@@ -123,16 +127,15 @@ export default function DashboardPage() {
   const pnlTrendUp = realizedPnl >= 0;
 
   const insightLabel = useMemo(() => {
-    if (analysis?.insights?.length) return analysis.insights[0];
     if (pnl?.breakdown?.length)
       return pnl.breakdown[0]?.eventTitle ?? "Tracking live events";
     return "Connect your account to surface more signal.";
-  }, [analysis?.insights, pnl?.breakdown]);
+  }, [pnl?.breakdown]);
 
   const metrics = [
     {
       label: "Total portfolio value",
-      value: portfolioLoading ? "—" : formatCurrency(totalValue),
+      value: portfolioLoading ? "—" : formatCurrency(totalValue, currency),
       meta: portfolioLoading
         ? "Loading live portfolio data"
         : `Updated ${formatDate(new Date())}`,
@@ -143,7 +146,7 @@ export default function DashboardPage() {
       label: "Daily change",
       value: portfolioLoading
         ? "—"
-        : `${formatCurrency(dailyChange)} · ${formatPercentage(dailyChangePercentage)}`,
+        : `${formatCurrency(dailyChange, currency)} · ${formatPercentage(dailyChangePercentage)}`,
       meta:
         dailyChange >= 0
           ? "Positive momentum across tracked markets"
@@ -162,7 +165,7 @@ export default function DashboardPage() {
     },
     {
       label: "Realized P&L",
-      value: pnlLoading ? "—" : formatCurrency(realizedPnl),
+      value: pnlLoading ? "—" : formatCurrency(realizedPnl, currency),
       meta: pnlLoading
         ? "Syncing the latest profit and loss"
         : pnlTrendUp
@@ -218,12 +221,12 @@ export default function DashboardPage() {
                   : "—"}
               </td>
               <td className="px-5 py-4 text-right tabular-nums text-zinc-50 sm:px-6">
-                {position.quantity.toLocaleString("en-US", {
+                {position.quantity.toLocaleString("en-NG", {
                   maximumFractionDigits: 4,
                 })}
               </td>
               <td className="px-5 py-4 text-right tabular-nums text-zinc-50 sm:px-6">
-                {formatCurrency(position.totalValue)}
+                {formatCurrency(position.totalValue, currency)}
               </td>
               <td className="px-5 py-4 text-right text-zinc-500 sm:px-6">
                 {formatDate(position.lastUpdated)}
@@ -255,7 +258,7 @@ export default function DashboardPage() {
           </p>
           <p className="mt-3 text-2xl font-semibold tabular-nums text-zinc-50">
             {pnl.settlementPnl !== undefined
-              ? formatCurrency(pnl.settlementPnl)
+              ? formatCurrency(pnl.settlementPnl, currency)
               : "—"}
           </p>
         </div>
@@ -264,7 +267,7 @@ export default function DashboardPage() {
             Trade P&L
           </p>
           <p className="mt-3 text-2xl font-semibold tabular-nums text-zinc-50">
-            {pnl.tradePnl !== undefined ? formatCurrency(pnl.tradePnl) : "—"}
+            {pnl.tradePnl !== undefined ? formatCurrency(pnl.tradePnl, currency) : "—"}
           </p>
         </div>
       </div>
@@ -291,7 +294,7 @@ export default function DashboardPage() {
                     row.realizedPnl >= 0 ? "text-emerald-400" : "text-red-400"
                   }`}
                 >
-                  {formatCurrency(row.realizedPnl)}
+                  {formatCurrency(row.realizedPnl, currency)}
                 </span>
               </div>
             ))}
@@ -312,62 +315,45 @@ export default function DashboardPage() {
     <EmptyState title="Analysis unavailable" description={analysisError} />
   ) : analysis ? (
     <div className="space-y-4">
-      <div className="rounded-3xl border border-white/10 bg-zinc-950/50 p-6 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
-        <div className="flex flex-wrap items-center gap-3">
-          <span
-            className={`rounded-full border px-3 py-1 text-xs font-medium ${
-              analysis.riskLevel === "LOW"
-                ? "border-emerald-500/20 bg-emerald-500/8 text-emerald-400"
-                : analysis.riskLevel === "HIGH"
-                  ? "border-red-500/20 bg-red-500/8 text-red-400"
-                  : "border-yellow-500/20 bg-yellow-500/8 text-yellow-400"
-            }`}
-          >
+      <div className="rounded-[24px] border border-white/5 bg-[#0A0A0A] p-6 shadow-sm">
+        <div className="mb-8 flex flex-wrap items-center gap-4 border-b border-white/5 pb-6">
+          <span className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wider ${
+            analysis.riskLevel === 'HIGH' ? 'border-red-500/20 bg-red-500/10 text-red-400' :
+            analysis.riskLevel === 'MEDIUM' ? 'border-amber-500/20 bg-amber-500/10 text-amber-400' :
+            'border-emerald-500/20 bg-emerald-950/40 text-emerald-400'
+          }`}>
             Risk: {analysis.riskLevel}
           </span>
-          <span className="text-sm text-zinc-500">
-            Confidence {(analysis.confidenceScore * 100).toFixed(0)}%
-          </span>
-          <span className="text-sm text-zinc-500">
-            {formatDate(analysis.generatedAt)}
-          </span>
+          <span className="text-[13px] font-medium text-zinc-500">Confidence {analysis.confidence}%</span>
+          {generatedAt && (
+            <span className="text-[13px] font-medium text-zinc-500">
+              {new Date(generatedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
+            </span>
+          )}
         </div>
-
-        <div className="mt-6 space-y-5">
+        
+        <div className="space-y-8">
           <div>
-            <h3 className="text-sm uppercase tracking-[0.28em] text-zinc-500">
-              Summary
-            </h3>
-            <p className="mt-3 whitespace-pre-wrap text-zinc-50">
-              {analysis.summary}
-            </p>
+            <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-500">S U M M A R Y</h3>
+            <p className="text-[15px] font-medium leading-relaxed text-zinc-50">{analysis.summary}</p>
           </div>
-
+          
           <div>
-            <h3 className="text-sm uppercase tracking-[0.28em] text-zinc-500">
-              Insights
-            </h3>
-            <ul className="mt-3 space-y-2 text-zinc-50">
-              {analysis.insights.map((line, index) => (
-                <li
-                  key={`${line}-${index}`}
-                  className="flex gap-3 rounded-2xl border border-white/5 bg-black/40 px-4 py-3"
-                >
-                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-400" />
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {analysis.marketOutlook ? (
-            <div>
-              <h3 className="text-sm uppercase tracking-[0.28em] text-zinc-500">
-                Outlook
-              </h3>
-              <p className="mt-3 text-zinc-50">{analysis.marketOutlook}</p>
+            <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-500">I N S I G H T S</h3>
+            <div className="space-y-3">
+              {Array.isArray(analysis.insights) ? analysis.insights.map((insight: string, i: number) => (
+                <div key={i} className="flex items-start gap-3 rounded-[16px] border border-white/5 bg-white/[0.02] p-4 shadow-sm">
+                  <div className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+                  <p className="text-[14px] leading-relaxed text-zinc-50">{insight}</p>
+                </div>
+              )) : null}
             </div>
-          ) : null}
+          </div>
+
+          <div>
+            <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-500">O U T L O O K</h3>
+            <p className="text-[15px] font-medium leading-relaxed text-zinc-50">{analysis.outlook}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -376,7 +362,7 @@ export default function DashboardPage() {
       title="Run AI analysis"
       description="Generate a premium portfolio summary with Gemini when you need a quick risk read."
       action={
-        <CardButton onClick={() => void runAnalysis()}>Run analysis</CardButton>
+        <CardButton onClick={() => void runAnalysis(portfolio, pnl)}>Run analysis</CardButton>
       }
     />
   );
@@ -434,7 +420,7 @@ export default function DashboardPage() {
                     plain English.
                   </p>
                 </div>
-                <CardButton onClick={() => void runAnalysis()}>
+                <CardButton onClick={() => void runAnalysis(portfolio, pnl)}>
                   Run analysis
                 </CardButton>
               </div>
@@ -451,7 +437,7 @@ export default function DashboardPage() {
                   Wallet balance
                 </p>
                 <p className="mt-3 text-3xl font-semibold tabular-nums text-zinc-50">
-                  {portfolioLoading ? "—" : formatCurrency(totalValue)}
+                  {portfolioLoading ? "—" : formatCurrency(totalValue, currency)}
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
@@ -475,15 +461,13 @@ export default function DashboardPage() {
                       : "font-medium text-red-400"
                   }
                 >
-                  {formatCurrency(dailyChange)}
+                  {formatCurrency(dailyChange, currency)}
                 </span>
               </div>
               <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-black/40 px-4 py-3 text-sm">
-                <span className="text-zinc-500">Analysis confidence</span>
+                <span className="text-zinc-500">Analysis status</span>
                 <span className="font-medium text-zinc-50">
-                  {analysis
-                    ? `${(analysis.confidenceScore * 100).toFixed(0)}%`
-                    : "Pending"}
+                  {analysis ? "Ready" : "Pending"}
                 </span>
               </div>
             </div>

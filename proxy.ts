@@ -1,14 +1,21 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getAdminAuth } from "./lib/firebase/admin";
+import { adminAuth } from "./lib/firebase/admin";
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  
+  // Only proxy /api routes
+  if (!pathname.startsWith('/api/')) {
+    return NextResponse.next();
+  }
+
   const token = request.headers.get("authorization")?.split("Bearer ")[1] || "";
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const user = await getAdminAuth()
+  const user = await adminAuth
     .verifyIdToken(token)
     .catch((err) => {
       console.error("Error verifying token:", err);
@@ -30,7 +37,3 @@ export async function proxy(request: NextRequest) {
     },
   });
 }
-
-export const config = {
-  matcher: "/api/:path*",
-};

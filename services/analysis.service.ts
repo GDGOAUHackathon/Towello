@@ -1,13 +1,72 @@
 import { geminiClient } from '@/lib/gemini/client';
 import { portfolioService } from '@/services/portfolio.service';
-import type { AIAnalysisResult } from '@/types/analysis';
+import { buildPortfolioPrompt, buildCategoryPrompt, buildSellPrompt } from '@/lib/gemini/prompts';
+import { getBayseClient } from '@/lib/bayse/client';
+import { BayseOutcomeBalance } from '@/lib/bayse/types';
 
 export class AnalysisService {
-  async generatePortfolioReport(userId: string): Promise<AIAnalysisResult> {
-    const { positions, summary } =
-      await portfolioService.getUserPortfolio(userId);
-    const payload = JSON.stringify({ summary, positions }, null, 2);
-    return geminiClient.generatePortfolioAnalysis(payload);
+  async generatePortfolioReport(userId: string, type: 'general' | 'category' = 'general'): Promise<{ analysis: any, generatedAt: string }> {
+    const bayse = getBayseClient();
+    const [portfolio, pnl] = await Promise.all([
+      bayse.getPortfolio(),
+      bayse.getPnL({ breakdown: true })
+    ]);
+    
+    let prompt: string;
+    if (type === 'category') {
+      prompt = buildCategoryPrompt(portfolio, pnl);
+    } else {
+      prompt = buildPortfolioPrompt(portfolio);
+    }
+
+    const response = await geminiClient.generateText(prompt, 0.7);
+    const generatedAt = new Date().toISOString();
+
+    const cleaned = response.replace(/```json|```/g, '').trim();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(cleaned);
+      if (!parsed.riskLevel || parsed.confidence === undefined || !parsed.summary || !Array.isArray(parsed.insights) || !parsed.outlook) {
+        throw new Error("Missing required fields");
+      }
+    } catch {
+      parsed = {
+        riskLevel: "LOW",
+        confidence: 0,
+        summary: "Analysis generation failed.",
+        insights: ["Could not parse structural AI analysis."],
+        outlook: "Neutral"
+      };
+    }
+
+    return { analysis: parsed, generatedAt };
+  }
+
+  async analyzePosition(userId: string, position: BayseOutcomeBalance): Promise<any> {
+    const bayse = getBayseClient();
+    const portfolio = await bayse.getPortfolio();
+    const livePosition = portfolio.outcomeBalances.find(p => p.id === position.id || p.market.id === position.market?.id);
+    
+    const quote = {
+      price: livePosition?.sellPrice || position.sellPrice,
+    };
+
+    const prompt = buildSellPrompt(position, quote);
+    const text = await geminiClient.generateText(prompt, 0.4);
+
+    try {
+      const cleanJson = text.replace(/```json\s?|```/g, '').trim();
+      const analysis = JSON.parse(cleanJson);
+      return analysis;
+    } catch (e) {
+      return {
+        recommendation: "HOLD",
+        confidence: "LOW",
+        edge_estimate: "neutral",
+        reasoning: "AI analysis parsing failed. Defaulting to HOLD."
+      };
+    }
   }
 }
 

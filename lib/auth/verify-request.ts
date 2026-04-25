@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server';
-import { getAdminAuth } from '@/lib/firebase/admin';
+import { adminAuth } from '@/lib/firebase/admin';
 
 export type AuthResult =
   | { uid: string }
@@ -19,19 +19,8 @@ export async function verifyFirebaseRequest(req: NextRequest): Promise<AuthResul
     return { error: 'Sign in required', status: 401 };
   }
 
-  let auth: ReturnType<typeof getAdminAuth>;
   try {
-    auth = getAdminAuth();
-  } catch {
-    return {
-      error:
-        'Firebase Admin is not configured on the server (check FIREBASE_ADMIN_* env).',
-      status: 503,
-    };
-  }
-
-  try {
-    const decoded = await auth.verifyIdToken(token);
+    const decoded = await adminAuth.verifyIdToken(token);
     return { uid: decoded.uid };
   } catch {
     return { error: 'Invalid or expired session', status: 401 };
