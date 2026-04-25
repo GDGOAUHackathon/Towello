@@ -6,9 +6,12 @@ import { useAuth } from '@/components/providers/AuthProvider';
 import { apiGet } from '@/lib/utils/fetcher';
 import type { PnLHistory } from '@/types/pnl';
 
+import { useCurrency } from '@/components/providers/CurrencyProvider';
+
 export function usePnL(timeframe: string = '1M') {
   const { user, loading: authLoading, getIdToken } = useAuth();
-  const keyPath = `${ROUTES.API.PNL}?timeframe=${encodeURIComponent(timeframe)}`;
+  const { currency } = useCurrency();
+  const keyPath = `${ROUTES.API.PNL}?timeframe=${encodeURIComponent(timeframe)}&currency=${currency}`;
 
   const { data, error, isLoading, mutate } = useSWR(
     user && !authLoading ? [keyPath, user.uid] : null,

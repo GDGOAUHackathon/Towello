@@ -3,9 +3,11 @@
 import React from 'react';
 import { usePortfolio } from '@/hooks/usePortfolio';
 import { formatCurrency, formatPercentage } from '@/lib/utils/format';
+import { useCurrency } from '@/components/providers/CurrencyProvider';
 
 export const PortfolioSummary: React.FC = () => {
   const { summary, isLoading, error } = usePortfolio();
+  const { currency } = useCurrency();
 
   if (isLoading) {
     return (
@@ -36,7 +38,7 @@ export const PortfolioSummary: React.FC = () => {
           Total value
         </p>
         <p className="mt-1 text-2xl font-semibold tabular-nums">
-          {formatCurrency(summary.totalValue)}
+          {formatCurrency(summary.totalValue, currency)}
         </p>
       </div>
       <div>
@@ -48,7 +50,7 @@ export const PortfolioSummary: React.FC = () => {
             gain ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
           }`}
         >
-          {formatCurrency(summary.dailyChange)} ({formatPercentage(summary.dailyChangePercentage)})
+          {formatCurrency(summary.dailyChange, currency)} ({formatPercentage(summary.dailyChangePercentage)})
         </p>
       </div>
       <div>

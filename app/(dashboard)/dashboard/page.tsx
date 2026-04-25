@@ -21,6 +21,7 @@ import {
   formatDate,
   formatPercentage,
 } from "@/lib/utils/format";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { auth } from "firebase-admin";
 import { getAuth } from "firebase/auth";
 
@@ -105,6 +106,7 @@ export default function DashboardPage() {
     isLoading: analysisLoading,
     runAnalysis,
   } = useAnalysis();
+  const { currency } = useCurrency();
 
   // useEffect(() => {
   //   const auth = getAuth();
@@ -132,7 +134,7 @@ export default function DashboardPage() {
   const metrics = [
     {
       label: "Total portfolio value",
-      value: portfolioLoading ? "—" : formatCurrency(totalValue),
+      value: portfolioLoading ? "—" : formatCurrency(totalValue, currency),
       meta: portfolioLoading
         ? "Loading live portfolio data"
         : `Updated ${formatDate(new Date())}`,
@@ -143,7 +145,7 @@ export default function DashboardPage() {
       label: "Daily change",
       value: portfolioLoading
         ? "—"
-        : `${formatCurrency(dailyChange)} · ${formatPercentage(dailyChangePercentage)}`,
+        : `${formatCurrency(dailyChange, currency)} · ${formatPercentage(dailyChangePercentage)}`,
       meta:
         dailyChange >= 0
           ? "Positive momentum across tracked markets"
@@ -162,7 +164,7 @@ export default function DashboardPage() {
     },
     {
       label: "Realized P&L",
-      value: pnlLoading ? "—" : formatCurrency(realizedPnl),
+      value: pnlLoading ? "—" : formatCurrency(realizedPnl, currency),
       meta: pnlLoading
         ? "Syncing the latest profit and loss"
         : pnlTrendUp
@@ -223,7 +225,7 @@ export default function DashboardPage() {
                 })}
               </td>
               <td className="px-5 py-4 text-right tabular-nums text-zinc-50 sm:px-6">
-                {formatCurrency(position.totalValue)}
+                {formatCurrency(position.totalValue, currency)}
               </td>
               <td className="px-5 py-4 text-right text-zinc-500 sm:px-6">
                 {formatDate(position.lastUpdated)}
@@ -255,7 +257,7 @@ export default function DashboardPage() {
           </p>
           <p className="mt-3 text-2xl font-semibold tabular-nums text-zinc-50">
             {pnl.settlementPnl !== undefined
-              ? formatCurrency(pnl.settlementPnl)
+              ? formatCurrency(pnl.settlementPnl, currency)
               : "—"}
           </p>
         </div>
@@ -264,7 +266,7 @@ export default function DashboardPage() {
             Trade P&L
           </p>
           <p className="mt-3 text-2xl font-semibold tabular-nums text-zinc-50">
-            {pnl.tradePnl !== undefined ? formatCurrency(pnl.tradePnl) : "—"}
+            {pnl.tradePnl !== undefined ? formatCurrency(pnl.tradePnl, currency) : "—"}
           </p>
         </div>
       </div>
@@ -291,7 +293,7 @@ export default function DashboardPage() {
                     row.realizedPnl >= 0 ? "text-emerald-400" : "text-red-400"
                   }`}
                 >
-                  {formatCurrency(row.realizedPnl)}
+                  {formatCurrency(row.realizedPnl, currency)}
                 </span>
               </div>
             ))}
@@ -451,7 +453,7 @@ export default function DashboardPage() {
                   Wallet balance
                 </p>
                 <p className="mt-3 text-3xl font-semibold tabular-nums text-zinc-50">
-                  {portfolioLoading ? "—" : formatCurrency(totalValue)}
+                  {portfolioLoading ? "—" : formatCurrency(totalValue, currency)}
                 </p>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
@@ -475,7 +477,7 @@ export default function DashboardPage() {
                       : "font-medium text-red-400"
                   }
                 >
-                  {formatCurrency(dailyChange)}
+                  {formatCurrency(dailyChange, currency)}
                 </span>
               </div>
               <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-black/40 px-4 py-3 text-sm">

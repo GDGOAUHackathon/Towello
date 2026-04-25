@@ -15,8 +15,14 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const { positions, summary } =
-      await portfolioService.getUserPortfolio(auth.uid);
+    const { searchParams } = req.nextUrl;
+    const cur = searchParams.get('currency');
+    const currency = cur === 'USD' || cur === 'NGN' ? cur : 'NGN';
+
+    const { positions, summary } = await portfolioService.getUserPortfolio(
+      auth.uid,
+      currency
+    );
 
     const body: ApiResponse<{
       positions: PortfolioPosition[];

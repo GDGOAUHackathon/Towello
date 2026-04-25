@@ -1,11 +1,10 @@
-const currencyFmt = new Intl.NumberFormat('en-NG', {
-  style: 'currency',
-  currency: 'NGN',
-  maximumFractionDigits: 2,
-});
-
-export function formatCurrency(value: number): string {
-  return currencyFmt.format(value);
+export function formatCurrency(value: number, currency: string = 'NGN'): string {
+  const locale = currency === 'NGN' ? 'en-NG' : 'en-US';
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 2,
+  }).format(value);
 }
 
 /** Value is already in percent units, e.g. 7.5 for 7.5%. */

@@ -35,7 +35,8 @@ function mapBaysePnLToHistory(
 export class PnLService {
   async getPnLHistory(
     _userId: string,
-    timeframe: string
+    timeframe: string,
+    currency: 'USD' | 'NGN' = 'NGN'
   ): Promise<PnLHistory> {
     const tf = (['1D', '1W', '1M', '1Y', 'ALL'].includes(timeframe)
       ? timeframe
@@ -45,13 +46,13 @@ export class PnLService {
     const bayse = await getBayseClient().getPnL({
       timePeriod,
       breakdown: true,
-      currency: 'NGN',
+      currency,
     });
     return mapBaysePnLToHistory(bayse, tf);
   }
 
-  async calculateCurrentPnL(_userId: string) {
-    const history = await this.getPnLHistory(_userId, '1M');
+  async calculateCurrentPnL(_userId: string, currency: 'USD' | 'NGN' = 'NGN') {
+    const history = await this.getPnLHistory(_userId, '1M', currency);
     const snap = history.snapshots[0];
     return {
       realizedPnL: snap.realizedPnL,
