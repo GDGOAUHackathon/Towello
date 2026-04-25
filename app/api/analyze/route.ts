@@ -35,8 +35,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({
-      ...result,
-      text: result.analysis // Ensure compatibility with UI expecting 'text'
+      analysis: result.analysis,
+      generatedAt: result.generatedAt
     });
   } catch (error: any) {
     console.error('Analysis error:', error);

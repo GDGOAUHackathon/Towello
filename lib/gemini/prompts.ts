@@ -8,10 +8,18 @@ export function buildPortfolioPrompt(portfolio: BaysePortfolioResponse): string 
   const positions = portfolio.outcomeBalances || [];
   
   if (positions.length === 0) {
-    return `The user has no active positions in their prediction market portfolio. 
-    Provide a high-level summary of how they should approach prediction markets, 
-    focusing on capital preservation and identifying high-edge opportunities. 
-    Keep it under 300 words.`;
+    return `Return ONLY valid JSON. No markdown. No explanation text.
+{
+  "riskLevel": "LOW",
+  "confidence": 0,
+  "summary": "No active positions in portfolio.",
+  "insights": [
+    "No current exposure means no immediate risk or potential gain.",
+    "Opportunity to build positions in high-edge markets.",
+    "Start with small, calculated entries."
+  ],
+  "outlook": "Neutral until positions are opened."
+}`;
   }
 
   // Extract top 10 positions by current value
@@ -39,15 +47,17 @@ SUMMARY DATA:
 - Current Value: ${portfolio.portfolioCurrentValue}
 - Total Change: ${portfolio.portfolioPercentageChange}%
 
-REQUIRED SECTIONS:
-1. **Portfolio Quality Score (0–100)**: A single number reflecting the risk-adjusted quality.
-2. **Edge Analysis**: Where is the user showing a quantitative edge?
-3. **Risk Concentration**: Are there too many eggs in one basket (event or category)?
-4. **Bad Bets**: Identify positions with poor asymmetry or negative EV outlook.
-5. **Trade Actions**: Specific quantitative recommendations (e.g., "Trim 20% of X").
+REQUIRED JSON OUTPUT FORMAT:
+{
+  "riskLevel": "LOW" | "MEDIUM" | "HIGH",
+  "confidence": number (0-100),
+  "summary": "1-2 sentences",
+  "insights": ["2-4 bullet points"],
+  "outlook": "1-2 sentences"
+}
 
 CONSTRAINTS:
-- Max 300 words.
+- Return ONLY valid JSON. No markdown. No explanation text.
 - Reference actual numbers.
 - No generic advice.
 - Be blunt and analytical.`;

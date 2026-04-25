@@ -6,7 +6,8 @@ import { useAuth } from '@/components/providers/AuthProvider';
 
 export function useAnalysis() {
   const { getIdToken } = useAuth();
-  const [data, setData] = useState<string | null>(null);
+  const [data, setData] = useState<any | null>(null);
+  const [generatedAt, setGeneratedAt] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
 
@@ -36,9 +37,11 @@ export function useAnalysis() {
       }
       
       setData(json.analysis || json.text);
+      setGeneratedAt(json.generatedAt || new Date().toISOString());
     } catch (e) {
       console.error("Analysis failed", e);
       setData(null);
+      setGeneratedAt(null);
       setError(e instanceof Error ? e.message : 'Analysis failed');
     } finally {
       setLoading(false);
@@ -47,6 +50,7 @@ export function useAnalysis() {
 
   return {
     analysis: data,
+    generatedAt,
     error,
     isLoading,
     runAnalysis,

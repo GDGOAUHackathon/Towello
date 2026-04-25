@@ -103,6 +103,7 @@ export default function DashboardPage() {
   const { pnl, isLoading: pnlLoading, error: pnlError } = usePnL("1M");
   const {
     analysis,
+    generatedAt,
     error: analysisError,
     isLoading: analysisLoading,
     runAnalysis,
@@ -314,9 +315,45 @@ export default function DashboardPage() {
     <EmptyState title="Analysis unavailable" description={analysisError} />
   ) : analysis ? (
     <div className="space-y-4">
-      <div className="rounded-3xl border border-white/10 bg-zinc-950/50 p-6 shadow-[0_16px_40px_rgba(0,0,0,0.28)]">
-        <div className="prose prose-invert max-w-none prose-p:text-zinc-50 prose-headings:text-zinc-50 prose-li:text-zinc-50">
-          <ReactMarkdown>{analysis}</ReactMarkdown>
+      <div className="rounded-[24px] border border-white/5 bg-[#0A0A0A] p-6 shadow-sm">
+        <div className="mb-8 flex flex-wrap items-center gap-4 border-b border-white/5 pb-6">
+          <span className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wider ${
+            analysis.riskLevel === 'HIGH' ? 'border-red-500/20 bg-red-500/10 text-red-400' :
+            analysis.riskLevel === 'MEDIUM' ? 'border-amber-500/20 bg-amber-500/10 text-amber-400' :
+            'border-emerald-500/20 bg-emerald-950/40 text-emerald-400'
+          }`}>
+            Risk: {analysis.riskLevel}
+          </span>
+          <span className="text-[13px] font-medium text-zinc-500">Confidence {analysis.confidence}%</span>
+          {generatedAt && (
+            <span className="text-[13px] font-medium text-zinc-500">
+              {new Date(generatedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
+            </span>
+          )}
+        </div>
+        
+        <div className="space-y-8">
+          <div>
+            <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-500">S U M M A R Y</h3>
+            <p className="text-[15px] font-medium leading-relaxed text-zinc-50">{analysis.summary}</p>
+          </div>
+          
+          <div>
+            <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-500">I N S I G H T S</h3>
+            <div className="space-y-3">
+              {Array.isArray(analysis.insights) ? analysis.insights.map((insight: string, i: number) => (
+                <div key={i} className="flex items-start gap-3 rounded-[16px] border border-white/5 bg-white/[0.02] p-4 shadow-sm">
+                  <div className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+                  <p className="text-[14px] leading-relaxed text-zinc-50">{insight}</p>
+                </div>
+              )) : null}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-500">O U T L O O K</h3>
+            <p className="text-[15px] font-medium leading-relaxed text-zinc-50">{analysis.outlook}</p>
+          </div>
         </div>
       </div>
     </div>

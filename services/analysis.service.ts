@@ -5,7 +5,7 @@ import { getBayseClient } from '@/lib/bayse/client';
 import { BayseOutcomeBalance } from '@/lib/bayse/types';
 
 export class AnalysisService {
-  async generatePortfolioReport(userId: string, type: 'general' | 'category' = 'general'): Promise<{ analysis: string, generatedAt: string }> {
+  async generatePortfolioReport(userId: string, type: 'general' | 'category' = 'general'): Promise<{ analysis: any, generatedAt: string }> {
     const bayse = getBayseClient();
     const portfolio = await bayse.getPortfolio();
     const pnl = await bayse.getPnL({ breakdown: true });
@@ -17,10 +17,28 @@ export class AnalysisService {
       prompt = buildPortfolioPrompt(portfolio);
     }
 
-    const analysis = await geminiClient.generateText(prompt, 0.7);
+    const response = await geminiClient.generateText(prompt, 0.7);
     const generatedAt = new Date().toISOString();
 
-    return { analysis, generatedAt };
+    const cleaned = response.replace(/```json|```/g, '').trim();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(cleaned);
+      if (!parsed.riskLevel || parsed.confidence === undefined || !parsed.summary || !Array.isArray(parsed.insights) || !parsed.outlook) {
+        throw new Error("Missing required fields");
+      }
+    } catch {
+      parsed = {
+        riskLevel: "LOW",
+        confidence: 0,
+        summary: "Analysis generation failed.",
+        insights: ["Could not parse structural AI analysis."],
+        outlook: "Neutral"
+      };
+    }
+
+    return { analysis: parsed, generatedAt };
   }
 
   async analyzePosition(userId: string, position: BayseOutcomeBalance): Promise<any> {
