@@ -47,8 +47,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result);
   } catch (error: any) {
     console.error('Analysis error:', error);
+    
+    // Sanitize user-facing error message
+    let userMessage = 'Our AI analysts are currently overwhelmed with requests. Please try again in a few minutes.';
+    
+    if (error.message?.includes('503') || error.message?.includes('high demand')) {
+      userMessage = 'The AI model is currently experiencing high demand. Please wait a moment and try again.';
+    } else if (error.message?.includes('API_KEY_INVALID')) {
+      userMessage = 'AI configuration error. Please contact support.';
+    }
+
     return NextResponse.json({ 
-      error: error.message || 'Failed to generate analysis' 
+      error: userMessage 
     }, { status: 500 });
   }
 }

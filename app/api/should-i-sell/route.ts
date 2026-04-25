@@ -19,8 +19,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(analysis);
   } catch (error: any) {
     console.error('Should-I-Sell error:', error);
+    
+    let userMessage = 'Failed to analyze position. Please try again.';
+    if (error.message?.includes('503') || error.message?.includes('high demand')) {
+      userMessage = 'The AI model is currently experiencing high demand. Please try again in a moment.';
+    }
+
     return NextResponse.json({ 
-      error: error.message || 'Failed to analyze position' 
+      error: userMessage 
     }, { status: 500 });
   }
 }
