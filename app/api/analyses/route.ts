@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyFirebaseRequest } from '@/lib/auth/verify-request';
-import { getAdminDb } from '@/lib/firebase/admin';
+import { adminDb } from '@/lib/firebase/admin';
 
 export async function GET(req: NextRequest) {
   const auth = await verifyFirebaseRequest(req);
@@ -9,8 +9,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const db = getAdminDb();
-    const snapshot = await db
+    const snapshot = await adminDb
       .collection('users')
       .doc(auth.uid)
       .collection('analyses')

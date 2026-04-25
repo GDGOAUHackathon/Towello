@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getAdminAuth } from "./lib/firebase/admin";
+import { adminAuth } from "./lib/firebase/admin";
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
@@ -15,7 +15,7 @@ export async function proxy(request: NextRequest) {
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const user = await getAdminAuth()
+  const user = await adminAuth
     .verifyIdToken(token)
     .catch((err) => {
       console.error("Error verifying token:", err);

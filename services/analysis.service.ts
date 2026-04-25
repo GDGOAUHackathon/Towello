@@ -2,7 +2,6 @@ import { geminiClient } from '@/lib/gemini/client';
 import { portfolioService } from '@/services/portfolio.service';
 import { buildPortfolioPrompt, buildCategoryPrompt, buildSellPrompt } from '@/lib/gemini/prompts';
 import { getBayseClient } from '@/lib/bayse/client';
-import { getAdminDb } from '@/lib/firebase/admin';
 import { BayseOutcomeBalance } from '@/lib/bayse/types';
 
 export class AnalysisService {
@@ -20,14 +19,6 @@ export class AnalysisService {
 
     const analysis = await geminiClient.generateText(prompt, 0.7);
     const generatedAt = new Date().toISOString();
-
-    // Save to Firestore
-    const db = getAdminDb();
-    await db.collection('users').doc(userId).collection('analyses').add({
-      text: analysis,
-      createdAt: generatedAt,
-      type: type
-    });
 
     return { analysis, generatedAt };
   }
