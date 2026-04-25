@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
 
     const analyses = snapshot.docs.map(doc => ({
       text: doc.data().text,
+      analysis: doc.data().text, // Map to both for compatibility
       createdAt: doc.data().createdAt,
       type: doc.data().type
     }));
