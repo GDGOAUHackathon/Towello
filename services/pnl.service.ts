@@ -45,7 +45,7 @@ export class PnLService {
     const bayse = await getBayseClient().getPnL({
       timePeriod,
       breakdown: true,
-      currency: 'USD',
+      currency: 'NGN',
     });
     return mapBaysePnLToHistory(bayse, tf);
   }

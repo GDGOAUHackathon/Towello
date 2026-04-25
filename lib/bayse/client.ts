@@ -38,8 +38,13 @@ export class BayseClient {
     };
   }
 
-  async getPortfolio(): Promise<BaysePortfolioResponse> {
-    const url = `${this.baseUrl}/v1/pm/portfolio`;
+  async getPortfolio(params?: { currency?: 'USD' | 'NGN' }): Promise<BaysePortfolioResponse> {
+    const search = new URLSearchParams();
+    if (params?.currency) {
+      search.set('currency', params.currency);
+    }
+    const qs = search.toString();
+    const url = `${this.baseUrl}/v1/pm/portfolio${qs ? `?${qs}` : ''}`;
     const res = await fetch(url, {
       method: 'GET',
       headers: this.readHeaders(),

@@ -91,7 +91,7 @@ export default function PositionsPage() {
                         : "—"}
                     </td>
                     <td className="px-5 py-4 text-right tabular-nums text-zinc-50 sm:px-6">
-                      {position.quantity.toLocaleString("en-US", {
+                      {position.quantity.toLocaleString("en-NG", {
                         maximumFractionDigits: 4,
                       })}
                     </td>

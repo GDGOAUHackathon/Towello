@@ -59,7 +59,7 @@ export function DashboardNavbar({
     onRefreshDone(new Date());
   };
 
-  const timeLabel = new Intl.DateTimeFormat("en-US", {
+  const timeLabel = new Intl.DateTimeFormat("en-NG", {
     hour: "numeric",
     minute: "2-digit",
   }).format(updatedAt);

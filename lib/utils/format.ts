@@ -1,6 +1,6 @@
-const currencyFmt = new Intl.NumberFormat('en-US', {
+const currencyFmt = new Intl.NumberFormat('en-NG', {
   style: 'currency',
-  currency: 'USD',
+  currency: 'NGN',
   maximumFractionDigits: 2,
 });
 
@@ -15,7 +15,7 @@ export function formatPercentage(value: number): string {
 
 export function formatDate(date: string | Date): string {
   const d = typeof date === 'string' ? new Date(date) : date;
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('en-NG', {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(d);

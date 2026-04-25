@@ -14,7 +14,7 @@ export class PortfolioService {
    */
   async getUserPortfolio(userId: string): Promise<UserPortfolioResult> {
     void userId;
-    const raw = await getBayseClient().getPortfolio();
+    const raw = await getBayseClient().getPortfolio({ currency: 'NGN' });
     return mapBaysePortfolioToApp(raw);
   }
 }
