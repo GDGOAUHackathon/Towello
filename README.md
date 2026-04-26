@@ -6,21 +6,21 @@ A full-stack prediction market intelligence platform that tracks portfolio perfo
 
 ## ✨ What This Project Does
 
-* 📊 Track your Bayse portfolio in real time
-* 📈 Analyze profit & loss (PnL) and performance
-* 🤖 Get AI-generated insights on your trades
-* 🔐 Secure authentication with Firebase
+- 📊 Track your Bayse portfolio in real time
+- 📈 Analyze profit & loss (PnL) and performance
+- 🤖 Get AI-generated insights on your trades
+- 🔐 Secure authentication with Firebase
 
 ---
 
 ## 🧱 Tech Stack
 
-* Next.js (App Router)
-* TypeScript
-* Tailwind CSS
-* Firebase (Auth + Firestore)
-* Google Gemini API
-* Bayse Markets API
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- Firebase (Auth + Firestore)
+- Google Gemini API
+- Bayse Markets API
 
 ---
 
@@ -57,9 +57,20 @@ Add:
 NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+
+NEXT_PUBLIC_USE_FIREBASE_EMULATOR=true
+NEXT_PUBLIC_FIREBASE_EMULATOR_HOST=127.0.0.1
+NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_PORT=9099
+NEXT_PUBLIC_FIRESTORE_EMULATOR_PORT=8080
 
 FIREBASE_ADMIN_PRIVATE_KEY=
 FIREBASE_ADMIN_CLIENT_EMAIL=
+FIREBASE_PROJECT_ID=
+FIRESTORE_EMULATOR_HOST=127.0.0.1:8080
+FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099
 
 BAYSE_PUBLIC_KEY=
 BAYSE_SECRET_KEY=
@@ -113,17 +124,17 @@ External Clients (Bayse, Gemini, Firebase)
 
 ## 🚫 Rules (Do Not Break These)
 
-* ❌ No API calls inside components
+- ❌ No API calls inside components
 
-* ❌ No business logic inside API routes
+- ❌ No business logic inside API routes
 
-* ❌ No direct external API calls from frontend
+- ❌ No direct external API calls from frontend
 
-* ✅ Always use API routes
+- ✅ Always use API routes
 
-* ✅ Always use service layer
+- ✅ Always use service layer
 
-* ✅ Keep files small and focused
+- ✅ Keep files small and focused
 
 ---
 
@@ -161,6 +172,7 @@ External Clients (Bayse, Gemini, Firebase)
 Branch naming should be based on the developer's name: `dev-name/feature-name`
 
 Examples:
+
 ```
 guardianprime/feature-name
 philip/feature-name
@@ -168,7 +180,6 @@ vickyjay/feature-name
 samkiel/feature-name
 olamilekan/feature-name
 ```
-
 
 ---
 
@@ -199,10 +210,10 @@ fix: handle API error
 
 ## ⚠️ Common Mistakes
 
-* Fetching directly in components
-* Mixing UI and logic
-* Hardcoding API responses
-* Ignoring types
+- Fetching directly in components
+- Mixing UI and logic
+- Hardcoding API responses
+- Ignoring types
 
 ---
 
@@ -218,17 +229,15 @@ Using Google Cloud (Cloud Run / App Engine):
 # Example: gcloud run deploy
 ```
 
-
-
 ---
 
 ## 🏁 Demo Checklist
 
-* [ ] Login works
-* [ ] Portfolio loads
-* [ ] PnL loads
-* [ ] AI generates insight
-* [ ] No console errors
+- [ ] Login works
+- [ ] Portfolio loads
+- [ ] PnL loads
+- [ ] AI generates insight
+- [ ] No console errors
 
 ---
 

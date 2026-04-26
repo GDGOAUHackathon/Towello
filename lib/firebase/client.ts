@@ -25,6 +25,8 @@ let authEmulatorConnected = false;
 let firestoreEmulatorConnected = false;
 
 const isDevelopment = process.env.NODE_ENV === "development";
+const useEmulator =
+  isDevelopment && process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR !== "false";
 const emulatorHost =
   process.env.NEXT_PUBLIC_FIREBASE_EMULATOR_HOST ?? "127.0.0.1";
 const authEmulatorPort = Number(
@@ -49,7 +51,7 @@ export function getFirebaseAuth(): Auth | null {
   if (!a) return null;
   if (!auth) {
     auth = getAuth(a);
-    if (isDevelopment && process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === "true" && !authEmulatorConnected) {
+    if (useEmulator && !authEmulatorConnected) {
       connectAuthEmulator(auth, `http://${emulatorHost}:${authEmulatorPort}`, {
         disableWarnings: true,
       });
@@ -64,7 +66,7 @@ export function getFirebaseDb(): Firestore | null {
   if (!a) return null;
   if (!db) {
     db = getFirestore(a);
-    if (isDevelopment && process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === "true" && !firestoreEmulatorConnected) {
+    if (useEmulator && !firestoreEmulatorConnected) {
       connectFirestoreEmulator(db, emulatorHost, firestoreEmulatorPort);
       firestoreEmulatorConnected = true;
     }
